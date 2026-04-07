@@ -226,6 +226,10 @@ The token is securely stored in your macOS Keychain.
 - [x] Shell completions
 - [x] E2E test suite
 - [x] GitHub repository setup
+- [x] **Agent Support: `--json` output for all commands**
+- [x] **Agent Support: `--dry-run` preview mode**
+- [x] **Agent Support: `get` and `find` commands**
+- [x] **Agent Support: Environment variable auth token**
 
 ### In Progress 🚧
 
@@ -235,11 +239,65 @@ The token is securely stored in your macOS Keychain.
 
 ### Planned 📋
 
-- [ ] `--dry-run` mode for previewing URLs
 - [ ] `--foreground` execution mode
 - [ ] Additional list views (logbook, all)
 - [ ] Command aliases (create-project, create-area)
 - [ ] Interactive mode
+
+## Claude Code Integration
+
+Things CLI is optimized for use with Claude Code and other AI agents.
+
+### Quick Setup for Claude Code
+
+1. **Install the CLI**
+   ```bash
+   cargo build --release
+   cp target/release/things /usr/local/bin/
+   ```
+
+2. **Configure Auth Token (via environment variable)**
+   ```bash
+   # Add to ~/.zshrc or ~/.bashrc
+   export THINGS_AUTH_TOKEN="your-token-from-things-app"
+   ```
+
+3. **Start using in Claude Code**
+   ```
+   You: 查看我今天的任务
+   Claude: [runs: things list today --json]
+   
+   You: 添加一个任务叫"完成报告"
+   Claude: [runs: things todo add "完成报告" --when today --json]
+   ```
+
+### Agent-Friendly Features
+
+- **`--json`**: All commands support JSON output for structured parsing
+- **`--dry-run`**: Preview operations without executing
+- **`todo find`**: Search tasks by title to get IDs
+- **Environment variable auth**: `THINGS_AUTH_TOKEN` for non-interactive use
+
+### Example Agent Workflows
+
+```bash
+# Workflow 1: Find and complete a task
+TASK_ID=$(things todo find "Buy milk" --json | jq -r '.data[0].uuid')
+things todo update $TASK_ID --complete --json
+
+# Workflow 2: Add project with todos
+PROJECT_ID=$(things project add "Website Launch" --json | jq -r '.data.id')
+things todo add "Design mockup" --list-id $PROJECT_ID --json
+things todo add "Write content" --list-id $PROJECT_ID --json
+
+# Workflow 3: Review today's tasks and reschedule incomplete
+things list today --json | jq -r '.data[] | select(.status != "Completed") | .uuid' | \
+  while read id; do
+    things todo update $id --when tomorrow --json
+  done
+```
+
+For detailed integration options, see [CLAUDE_CODE_INTEGRATION.md](CLAUDE_CODE_INTEGRATION.md).
 
 ## Related Documents
 
@@ -247,6 +305,7 @@ The token is securely stored in your macOS Keychain.
 - [ARCHITECTURE.md](ARCHITECTURE.md) - Detailed architecture design
 - [COMPARISON.md](COMPARISON.md) - Comparison with things3-cli (Go)
 - [e2e/README.md](e2e/README.md) - E2E testing guide
+- [CLAUDE_CODE_INTEGRATION.md](CLAUDE_CODE_INTEGRATION.md) - Claude Code integration guide
 
 ## License
 
