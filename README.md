@@ -62,13 +62,25 @@ things list inbox
 
 ### Auth Token (Required for Updates)
 
-To update existing todos or projects, you need to set an auth token:
+To update existing todos or projects, you need an auth token.
+
+#### For Agent/Scripting Usage (Recommended)
+
+Set the token as an environment variable:
+
+```bash
+export THINGS_AUTH_TOKEN="your-token-here"
+```
+
+Add this to your `~/.zshrc`, `~/.bashrc`, or project `.env` file.
+
+#### For Interactive Usage
 
 1. Open Things 3 → Settings → General → Things URLs
 2. Copy your Authorization Token
 3. Run: `things config set-auth-token` and paste the token
 
-The token is securely stored in your macOS Keychain.
+The token will be stored in your macOS Keychain.
 
 ### Default Settings
 

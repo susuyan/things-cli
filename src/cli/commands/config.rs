@@ -2,7 +2,7 @@ use colored::Colorize;
 use dialoguer::{Confirm, Password};
 
 use crate::cli::args::ConfigCommand;
-use crate::config::store::{CompositeStore, ConfigStore};
+use crate::config::store::{CompositeStore, ConfigStore, AUTH_TOKEN_ENV_VAR};
 
 /// 处理配置命令
 pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
@@ -28,7 +28,21 @@ pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
             };
 
             store.set_auth_token(&token)?;
-            println!("{}", "✓ Auth token saved to system keychain".green());
+            println!();
+            println!("{}", "Auth token configuration".bold());
+            println!();
+            println!(
+                "For Agent/Scripting usage, set the environment variable:",
+            );
+            println!("  export {}='{}'", AUTH_TOKEN_ENV_VAR.cyan(), token);
+            println!();
+            println!(
+                "You can add this to your {} or {} file.",
+                "~/.zshrc".dimmed(),
+                "~/.bashrc".dimmed()
+            );
+            println!();
+            println!("Note: Token also saved to keychain for backward compatibility.",);
         }
 
         ConfigCommand::DeleteAuthToken => {
@@ -52,23 +66,25 @@ pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
         }
 
         ConfigCommand::CheckAuthToken => {
-            let has_token = store.has_auth_token()?;
-            if has_token {
-                println!("{}", "✓ Auth token is configured".green());
+            // 检查环境变量
+            let env_token = std::env::var(AUTH_TOKEN_ENV_VAR).ok();
+            let keychain_token = store.has_auth_token()?;
 
-                // 显示 token 的前几位
-                if let Ok(Some(token)) = store.get_auth_token() {
-                    let masked: String = if token.len() > 8 {
-                        format!("{}...", &token[..8])
-                    } else {
-                        "***".to_string()
-                    };
-                    println!("  Token: {}", masked.dimmed());
-                }
+            if env_token.is_some() {
+                println!("{}", "✓ Auth token is configured via environment variable".green());
+                println!("  Variable: {}", AUTH_TOKEN_ENV_VAR.cyan());
+            } else if keychain_token {
+                println!("{}", "✓ Auth token is configured in keychain".green());
+                println!();
+                println!("Note: Consider moving to environment variable for Agent usage:");
+                println!("  export {}='your-token'", AUTH_TOKEN_ENV_VAR.cyan());
             } else {
                 println!("{}", "✗ Auth token is not configured".red());
                 println!();
-                println!("Run {} to set it up", "things config set-auth-token".cyan());
+                println!("For Agent usage, set the environment variable:");
+                println!("  export {}='your-token'", AUTH_TOKEN_ENV_VAR.cyan());
+                println!();
+                println!("Or run {} for interactive setup", "things config set-auth-token".cyan());
             }
         }
 
@@ -118,15 +134,20 @@ fn show_config(store: &CompositeStore) -> anyhow::Result<()> {
     println!();
 
     // 显示 auth-token 状态
-    let has_token = store.has_auth_token()?;
-    println!(
-        "Auth Token: {}",
-        if has_token {
-            "✓ configured".green()
-        } else {
-            "✗ not configured".red()
-        }
-    );
+    let env_token = std::env::var(AUTH_TOKEN_ENV_VAR).ok();
+    let keychain_token = store.has_auth_token()?;
+
+    if env_token.is_some() {
+        println!("Auth Token: {}", "✓ configured via environment variable".green());
+        println!("  Variable: {}", AUTH_TOKEN_ENV_VAR.cyan());
+    } else if keychain_token {
+        println!("Auth Token: {}", "✓ configured in keychain".green());
+        println!();
+        println!("Tip: For Agent usage, use environment variable:");
+        println!("  export {}='your-token'", AUTH_TOKEN_ENV_VAR.cyan());
+    } else {
+        println!("Auth Token: {}", "✗ not configured".red());
+    }
 
     // 显示其他配置
     let config = store.load_config()?;

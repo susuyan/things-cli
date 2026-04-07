@@ -57,6 +57,9 @@ impl CompositeStore {
     }
 }
 
+/// 环境变量名（用于 auth-token）
+pub const AUTH_TOKEN_ENV_VAR: &str = "THINGS_AUTH_TOKEN";
+
 impl ConfigStore for CompositeStore {
     fn load_config(&self) -> anyhow::Result<Config> {
         self.file.load()
@@ -67,14 +70,42 @@ impl ConfigStore for CompositeStore {
     }
 
     fn set_auth_token(&self, token: &str) -> anyhow::Result<()> {
+        eprintln!(
+            "Note: Auth token is now stored in environment variable '{}'.",
+            AUTH_TOKEN_ENV_VAR
+        );
+        eprintln!("Please set it in your shell profile or .env file:");
+        eprintln!("  export {}='{}'", AUTH_TOKEN_ENV_VAR, token);
+        eprintln!();
+        eprintln!("Falling back to keychain storage for backward compatibility.");
         self.keychain.set(token)
     }
 
     fn get_auth_token(&self) -> anyhow::Result<Option<String>> {
+        // 1. 优先从环境变量读取
+        if let Ok(token) = std::env::var(AUTH_TOKEN_ENV_VAR) {
+            if !token.is_empty() {
+                return Ok(Some(token));
+            }
+        }
+
+        // 2. 后备：从 keychain 读取
         self.keychain.get()
     }
 
     fn delete_auth_token(&self) -> anyhow::Result<()> {
+        // 检查环境变量是否存在
+        if std::env::var(AUTH_TOKEN_ENV_VAR).is_ok() {
+            eprintln!(
+                "Note: Auth token is set via environment variable '{}'.",
+                AUTH_TOKEN_ENV_VAR
+            );
+            eprintln!("Please unset it from your shell profile or .env file:");
+            eprintln!("  unset {}", AUTH_TOKEN_ENV_VAR);
+            eprintln!();
+        }
+
+        // 同时删除 keychain 中的 token
         self.keychain.delete()
     }
 }
