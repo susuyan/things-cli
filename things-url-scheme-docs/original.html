@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Things URL Scheme - Things Support</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+	<meta name="description" content="The URL scheme lets pro users and developers of other apps send commands to Things. This page explains how it works.">
+	
+
+	<!-- Favicon -->
+	<link rel="icon" href="/favicon.ico?breackcache=ddi27f1a" sizes="32x32">
+	<link rel="icon" href="/favicon.svg?breackcache=ddi27f1a" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png?breackcache=ddi27f1a">
+
+	<!-- Open Graph -->
+	<meta property="og:image" content="https://culturedcode.com/frozen/2025/12/things-social-card-io80.png">
+
+	<!-- Styles -->
+	<link rel="stylesheet" href="/global/shared/2024-02-20/shared.css?breakcache=ksy265hs">
+	<link rel="stylesheet" href="/things/support/2022-12-13/support.css?breakcache=f7yjz6gi">
+
+	<!-- Queue -->
+	<script>var queue = []</script>
+
+	<!-- Matomo -->
+	<script>
+	  var _paq = window._paq || [];
+	  _paq.push(['setCookieDomain', '*.culturedcode.com']);
+	  _paq.push(['setDomains', ['*.culturedcode.com']]);
+	  _paq.push(['enableLinkTracking']);
+	  _paq.push(['enableHeartBeatTimer']);
+	  _paq.push(['trackPageView']);
+	  (function() {
+	    var u='https://thingsapp.matomo.cloud/';
+	    _paq.push(['setTrackerUrl', u+'matomo.php']);
+	    _paq.push(['setSiteId', '1']);
+	    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+	    g.type='text/javascript'; g.async=true; g.defer=true; g.src='//cdn.matomo.cloud/thingsapp.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+	  })();
+	</script>
+</head>
+<body>
+
+<div class="page">
+
+	
+	<div class="slice for-navigation">
+		<div class="container">
+
+
+			<div class="navigation">
+				<div class="navigation-bar">
+					<div class="navigation-logo">
+						<a class="navigation-logobutton" href="/things/">Things</a>
+					</div>
+					<ul class="navigation-list">
+						<li class="navigation-item for-features">
+							<a class="navigation-button" href="/things/features/">
+								<span class="navigation-icon"></span>
+								<span class="navigation-title">Features</span>
+							</a>
+						</li>
+						<li class="navigation-item for-support">
+							<a class="navigation-button" href="/things/support/">
+								<span class="navigation-icon"></span>
+								<span class="navigation-title">Support</span>
+							</a>
+						</li>
+						<li class="navigation-item for-blog">
+							<a class="navigation-button" href="/things/blog/">
+								<span class="navigation-icon"></span>
+								<span class="navigation-title">Blog</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="navigation-shadow"></div>
+			</div> <!-- navigation -->
+
+		</div>
+	</div> <!-- slice -->
+
+
+	<div class="slice for-quickfind">
+		<div class="container is-compact">
+
+
+			<div class="quickfind">
+				<div class="quickfind-search">
+					<input class="quickfind-textfield" type="text" value="" placeholder="How can we help you?">
+					<div class="quickfind-clear"></div>
+				</div>
+				<ul class="quickfind-results"></ul>
+			</div> <!-- quickfind -->
+
+
+		</div>
+	</div> <!-- slice -->
+
+  
+	<div class="slice for-article">
+		<div class="container is-compact">
+				
+			<div class="article">
+				<div class="article-header">
+					<h1 class="article-title has-icon-urlscheme">			
+						Things URL Scheme
+					</h1>
+				</div>
+				<div class="article-body">
+
+					<!-- If you ever remove this page or change its ID, you must also change the corresponding redirect in /help/url-scheme (we point to it from Things) -->
+
+<p class="introduction">The URL scheme lets pro users and developers of other apps send commands to Things. This page explains how it works.</p>
+
+<div class="figure"><img src="/frozen/2018/03/things-url-scheme-robot.png" width="150" alt=""></div>
+
+<p>Here are some examples of commands that Things understands:</p>
+<ul>
+	<li>Create a new to-do named “Buy milk”.</li>
+	<li>Show the Today list.</li>
+	<li>Show all to-dos tagged with “Errand”.</li>
+	<li>Search all to-dos for “shipping address”.</li>
+</ul>
+
+<p>There’s also a powerful JSON-based command that lets you create entire projects, together with all their notes, headings, and to-dos.</p>
+
+<!-- <p>Apps that have used these commands include automation apps like <a href="https://agiletortoise.com/drafts/">Drafts</a>, <a href="https://www.cromulentlabs.com/launcher.html">Launcher</a> or <a href="https://contrast.co/launch-center-pro/">Launch Center Pro</a>. The mind-mapping tool <a href="https://mindnode.com">MindNode</a> uses these commands to send the result of a brainstorming session to Things. If you use an app that you think should support sending data to Things, please contact the developer of that app and link them to this page.</p> -->
+
+<div class="toc">
+	<h6 class="toc-heading">In this article:</h6>
+	<ol class="toc-list">
+		<li class="toc-item"><a class="toc-link" href="#link-builder">Link Builder</a></li>
+		<li class="toc-item"><a class="toc-link" href="#overview">Overview</a></li>
+		<li class="toc-item">
+			<a class="toc-link" href="#commands">Commands</a>
+			<ul style="margin-bottom: 0">
+				<li class="toc-item"><a class="toc-link" href="#add">add</a></li>
+				<li class="toc-item"><a class="toc-link" href="#add-project">add-project</a></li>
+				<li class="toc-item"><a class="toc-link" href="#update">update</a></li>
+				<li class="toc-item"><a class="toc-link" href="#update-project">update-project</a></li>
+				<li class="toc-item"><a class="toc-link" href="#show">show</a></li>
+				<li class="toc-item"><a class="toc-link" href="#search">search</a></li>
+				<li class="toc-item"><a class="toc-link" href="#version">version</a></li>
+			</ul>
+		</li>
+		<li class="toc-item">
+			<a class="toc-link" href="#for-developers">For Developers</a>
+			<ul>
+				<li class="toc-item"><a class="toc-link" href="#json">json</a></li>
+				<li class="toc-item"><a class="toc-link" href="#add-json">add-json (deprecated)</a></li>
+			</ul>
+		</li>
+	</ol>
+</div>
+
+<h1 class="h1 is-strong" id="link-builder">Link Builder</h1>
+
+<p>You can find the full documentation for each supported command further below. If you want to jump right in, here’s a little link builder tool to get you started. Simply fill out some of the fields and the corresponding link will be created for you on the fly. Enjoy!</p>
+
+<script>
+	
+	var linkbuilder = {
+		
+		init: function(elements) {
+			for (var i=0; i<elements.length; ++i) {
+				// General
+				var element = elements.eq(i);
+				if (element.hasClass('is-initialized')) { return; }
+				element.addClass('is-initialized');
+				// Tabs
+				var tabs = element.find('.linkbuilder-tab');
+				tabs.on('click', $.proxy(function(event) {
+					var tab = $(event.currentTarget);
+					this.selectTab(tab);
+					return false;
+				}, this));
+				this.selectTab(tabs.eq(0));
+				// Help
+				var helps = element.find('.linkbuilder-help');
+				for (var j=0; j<helps.length; ++j) {
+					var help = helps.eq(j);
+					var linkedDtElement = $(help.attr('href'));
+					var linkedDdElement = linkedDtElement.next();
+					var newElement = $('<span class="linkbuilder-help tooltip" title="'+linkedDdElement.text()+'"></span>'); /* help.text() */
+					help.replaceWith(newElement);
+				}
+				helps = element.find('.linkbuilder-help')
+				tooltip.init(helps);
+				// Form and Link Generator
+				var textfieldsAndCheckboxes = element.find('.linkbuilder-field, .linkbuilder-checkbox');
+				var commands = element.find('.linkbuilder-command');
+				textfieldsAndCheckboxes.on('input change', $.proxy(function(event) {
+					var command = $(event.currentTarget).closest('.linkbuilder-command');
+					this.update(command);
+				}, this));
+				this.update(commands);
+			}
+		},
+		
+		selectTab: function(tabElement) {
+			var element = tabElement.closest('.linkbuilder');
+			var tabs = element.find('.linkbuilder-tab');
+			var panes = element.find('.linkbuilder-pane');
+			if (tabs.length === panes.length) {
+				var n = 0;
+				for (var i=0; i<tabs.length; ++i) {
+					if (tabElement[0] === tabs[i]) {
+						n = i;
+						break;
+					}
+				}
+				tabs.removeClass('is-selected');
+				panes.removeClass('is-selected');
+				tabs.eq(n).addClass('is-selected');
+				panes.eq(n).addClass('is-selected');
+			}
+		},
+		
+		update: function(commandElements) {
+			for (var i=0; i<commandElements.length; ++i) {
+				var link = this.createLink(commandElements.eq(i));
+				var output = commandElements.eq(i).find('.linkbuilder-output').eq(0);
+				if (output.html() !== link) {
+					/* only change DOM if necessary, otherwise clicking the link doesn’t work directly, while you’re still making changes in a textfield (clicking outside the textfield fires a 'change' event, and if that changes the DOM, the link doesn’t work) */
+					output.html(link);					
+				}
+			}
+
+		},
+		
+		createLink: function(commandElement) {
+			var command = commandElement.data('command');
+			var fields = commandElement.find('.linkbuilder-field');
+			var checkboxes = commandElement.find('.linkbuilder-checkbox');
+			var parameters = [];
+			for (var i=0; i<fields.length; ++i) {
+				if (fields[i].value) {
+					parameters.push(fields[i].name+'='+encodeURIComponent(fields[i].value));
+				}
+			}
+			for (var i=0; i<checkboxes.length; ++i) {
+				var parameterIsTrueByDefault = false; /* currently no parameter is true by default */
+				var parameterNeedsToBeSet = (checkboxes[i].checked) || (parameterIsTrueByDefault && checkboxes[i].checked === false);
+				if (parameterNeedsToBeSet) {
+					parameters.push(checkboxes[i].name+'='+checkboxes[i].checked);
+				}
+			}
+			var url = 'things:///'+command+'?'+parameters.join('&amp;');
+			return output = '<a href="'+url+'">'+url+'</a>';
+		}
+		
+	}
+
+	if (typeof queue !== 'undefined') {
+		queue.push(function() {
+			linkbuilder.init($('.linkbuilder'));
+		});
+	}
+
+</script>
+<style scoped>
+	
+	.linkbuilder {
+		/* Layout */
+		padding: 4% 5%;
+		margin: 20px 0;
+		/* Typography */
+		font-family: -apple-system, sans-serif;
+		font-size: 14px;
+		/* Appearance */
+		background: #f4f5f6;
+		border-radius: 10px;
+	}
+	
+	.linkbuilder-nav {
+		padding-bottom: 5px;
+	}
+
+	.linkbuilder.is-initialized .linkbuilder-title {
+		display: none;
+	}
+	
+	.linkbuilder-tab {
+		/* Layout */
+		display: inline-block;
+		padding: 0.2em 0.5em;
+		margin: 0.1em 0.2em 0.2em 0;
+		/* Typography */
+		font-size: 1.15em;
+		font-weight: 700;
+		text-decoration: none !important;
+		/* Appearance */
+		color: #2274e5;
+		border-radius: 4px;
+		background: hsla(215, 79%, 52%, 0.125);
+	}
+	.linkbuilder-tab:hover {
+		background: hsla(215, 79%, 52%, 0.25);
+	}
+	.linkbuilder-tab.is-selected {
+		color: #fff;
+		background: #2274e5;
+	}
+	
+	.linkbuilder.is-initialized .linkbuilder-pane {
+		display: none;
+	}
+	.linkbuilder.is-initialized .linkbuilder-pane.is-selected {
+		display: block;
+	}
+		
+	.linkbuilder-row {
+		margin-bottom: 16px;
+	}
+	
+	.linkbuilder-help {	}
+	.linkbuilder-help:after {
+		/* Override Tooltip */
+		margin-left: 0;
+		vertical-align: -0.3em;		
+	}
+	
+	.linkbuilder label {
+		cursor: default;
+	}
+	
+	.linkbuilder code {
+		color: inherit;
+		background: none;
+		border: none;
+		padding: 0;
+		font-size: inherit;
+		font-weight: 400;
+	}
+	
+	.linkbuilder-field {
+		/* Layout */
+	    box-sizing: border-box;
+		display: block;
+	    margin: 2px 0;
+	    padding: 5px;
+		width: 100%;
+		max-width: 100%;
+		/* Typography */
+		font-size: 15px;
+		/* Appearance */
+	    background: #fff;
+	    border: 1px solid #aaa;
+	    border-radius: 3px;
+	}
+	.linkbuilder-field:focus {
+	    border-color: #5095f7;
+	    outline: 0;
+	    box-shadow:0 0 0 2px rgba(80, 149, 247, .7), 0 1px 3px rgba(0, 0, 0, .1) inset
+	}
+	textarea.linkbuilder-field {
+	    height: 90px;
+	}
+	
+	.linkbuilder-output {
+		/* Layout */
+		padding: 0.5em 1em;
+		margin: 5px 0 30px 0;
+		/* Typography */
+		color: hsla(212, 71%, 6%, 0.75);
+		font-family: SFMono-Regular, Menlo, "Andale Mono", Consolas, monospace;
+		font-weight: 600;
+		/* Appearance */
+		border-radius: 4px;
+		background: hsla(212, 71%, 6%, 0.10);
+		/* Soft Wrapping */
+		overflow: hidden;
+		white-space: -moz-pre-wrap !important;
+		white-space: -o-pre-wrap;
+		white-space: pre-wrap;
+		word-wrap: break-word; /* IE */
+	}
+	.linkbuilder-output a {
+		color: inherit;
+	}
+</style>
+
+<div class="linkbuilder">
+
+	<div class="linkbuilder-nav">
+		<a class="linkbuilder-tab" href="#linkbuilder-add">add</a>
+		<a class="linkbuilder-tab" href="#linkbuilder-add-project">add-project</a>
+		<a class="linkbuilder-tab" href="#linkbuilder-update">update</a>
+		<a class="linkbuilder-tab" href="#linkbuilder-update-project">update-project</a>
+		<a class="linkbuilder-tab" href="#linkbuilder-show">show</a>
+		<a class="linkbuilder-tab" href="#linkbuilder-search">search</a>
+		<a class="linkbuilder-tab" href="#linkbuilder-json">json</a>
+	</div>
+	<div class="linkbuilder-frame">
+		
+		<h4 class="linkbuilder-title" id="linkbuilder-add">add</h4>
+		<div class="linkbuilder-pane">
+
+			<div class="linkbuilder-command" data-command="add">
+				<div class="linkbuilder-output">things:///...</div>
+				<div class="linkbuilder-form">
+					<div class="linkbuilder-row">
+						<label><code>title</code></label> <a class="linkbuilder-help" href="#add-parameter-title">?</a> / 
+						<label><code>titles</code></label> <a class="linkbuilder-help" href="#add-parameter-titles">?</a>
+						<input class="linkbuilder-field" type="text" name="title" placeholder="a title" autocomplete="off">
+						<textarea class="linkbuilder-field" name="titles" placeholder="or multiple to-do titles separated by new lines"></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="completed"> <code>completed</code></label> <a class="linkbuilder-help" href="#add-parameter-completed">?</a> 
+						or 
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="canceled"> <code>canceled</code></label> <a class="linkbuilder-help" href="#add-parameter-canceled">?</a>
+						<br>
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="show-quick-entry"> <code>show-quick-entry</code></label> <a class="linkbuilder-help" href="#add-parameter-show-quick-entry">?</a>
+						<br>
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="reveal"> <code>reveal</code></label> <a class="linkbuilder-help" href="#add-parameter-reveal">?</a>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>notes</code></label> <a class="linkbuilder-help" href="#add-parameter-notes">?</a>
+						<textarea class="linkbuilder-field" name="notes" placeholder=""></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>checklist-items</code></label> <a class="linkbuilder-help" href="#add-parameter-checklist-items">?</a>
+						<textarea class="linkbuilder-field" name="checklist-items" placeholder="separated by new lines"></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>when</code></label> <a class="linkbuilder-help" href="#add-parameter-when">?</a>
+						<input class="linkbuilder-field" type="text" name="when" placeholder="e.g. 2026-03-25 or in 3 days" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>deadline</code></label> <a class="linkbuilder-help" href="#add-parameter-deadline">?</a>
+						<input class="linkbuilder-field" type="text" name="deadline" placeholder="e.g. 2026-03-25 or in 3 days" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>tags</code></label> <a class="linkbuilder-help" href="#add-parameter-tags">?</a>
+						<input class="linkbuilder-field" type="text" name="tags" placeholder="e.g. home,errand" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>list</code></label> <a class="linkbuilder-help" href="#add-parameter-list">?</a> / 
+						<label><code>list-id</code></label> <a class="linkbuilder-help" href="#add-parameter-list-id">?</a>
+						<input class="linkbuilder-field" type="text" name="list" placeholder="project or area title" autocomplete="off">
+						<input class="linkbuilder-field" type="text" name="list-id" placeholder="or ID" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>heading</code></label> <a class="linkbuilder-help" href="#add-parameter-heading">?</a>
+						<input class="linkbuilder-field" type="text" name="heading" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>creation-date</code></label> <a class="linkbuilder-help" href="#add-parameter-creation-date">?</a>
+						<input class="linkbuilder-field" type="text" name="creation-date" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>completion-date</code></label> <a class="linkbuilder-help" href="#add-parameter-completion-date">?</a>
+						<input class="linkbuilder-field" type="text" name="completion-date" placeholder="" autocomplete="off">
+					</div>
+				</div>
+			</div> <!-- linkbuilder-command -->
+			
+		</div> <!-- linkbuilder-pane -->
+
+		<h4 class="linkbuilder-title" id="linkbuilder-add-project">add-project</h4>
+		<div class="linkbuilder-pane">
+
+			<div class="linkbuilder-command" data-command="add-project">
+				<div class="linkbuilder-output">things:///...</div>
+				<div class="linkbuilder-form">
+					<div class="linkbuilder-row">
+						<label><code>title</code></label> <a class="linkbuilder-help" href="#add-project-parameter-title">?</a>
+						<input class="linkbuilder-field" type="text" name="title" placeholder="a title" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="completed"> <code>completed</code></label> <a class="linkbuilder-help" href="#add-project-parameter-completed">?</a>
+						or 
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="canceled"> <code>canceled</code></label> <a class="linkbuilder-help" href="#add-project-parameter-canceled">?</a>
+						<br>
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="reveal"> <code>reveal</code></label> <a class="linkbuilder-help" href="#add-project-parameter-reveal">?</a>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>notes</code></label> <a class="linkbuilder-help" href="#add-project-parameter-notes">?</a>
+						<textarea class="linkbuilder-field" name="notes" placeholder=""></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>when</code></label> <a class="linkbuilder-help" href="#add-project-parameter-when">?</a>
+						<input class="linkbuilder-field" type="text" name="when" placeholder="e.g. 2026-03-25 or in 3 days" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>deadline</code></label> <a class="linkbuilder-help" href="#add-project-parameter-deadline">?</a>
+						<input class="linkbuilder-field" type="text" name="deadline" placeholder="e.g. 2026-03-25 or in 3 days" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>tags</code></label> <a class="linkbuilder-help" href="#add-project-parameter-tags">?</a>
+						<input class="linkbuilder-field" type="text" name="tags" placeholder="e.g. home,errand" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>area</code></label> <a class="linkbuilder-help" href="#add-project-parameter-area">?</a> / 
+						<label><code>area-id</code></label> <a class="linkbuilder-help" href="#add-project-parameter-area-id">?</a>
+						<input class="linkbuilder-field" type="text" name="area" placeholder="area title" autocomplete="off">
+						<input class="linkbuilder-field" type="text" name="area-id" placeholder="or id" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>to-dos</code></label> <a class="linkbuilder-help" href="#add-project-parameter-to-dos">?</a>
+						<textarea class="linkbuilder-field" name="to-dos" placeholder="separated by new line"></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>creation-date</code></label> <a class="linkbuilder-help" href="#add-project-parameter-creation-date">?</a>
+						<input class="linkbuilder-field" type="text" name="creation-date" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>completion-date</code></label> <a class="linkbuilder-help" href="#add-project-parameter-completion-date">?</a>
+						<input class="linkbuilder-field" type="text" name="completion-date" placeholder="" autocomplete="off">
+					</div>
+				</div>
+			</div> <!-- linkbuilder-command -->
+
+		</div> <!-- linkbuilder-pane -->
+		
+		<h4 class="linkbuilder-title" id="linkbuilder-update">update</h4>
+		<div class="linkbuilder-pane">
+
+			<div class="linkbuilder-command" data-command="update">
+				<div class="linkbuilder-output">things:///...</div>
+				<div class="linkbuilder-form">
+					<div class="linkbuilder-row">
+						<label><code>auth-token</code></label> <a class="linkbuilder-help" href="#update-parameter-auth-token">?</a>
+						<input class="linkbuilder-field" type="text" name="auth-token" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>id</code></label> <a class="linkbuilder-help" href="#update-parameter-id">?</a>
+						<input class="linkbuilder-field" type="text" name="id" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>title</code></label> <a class="linkbuilder-help" href="#update-parameter-title">?</a>
+						<input class="linkbuilder-field" type="text" name="title" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="completed"> <code>completed</code></label> <a class="linkbuilder-help" href="#update-parameter-completed">?</a> 
+						or 
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="canceled"> <code>canceled</code></label> <a class="linkbuilder-help" href="#update-parameter-canceled">?</a>
+						<br>
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="reveal"> <code>reveal</code></label> <a class="linkbuilder-help" href="#update-parameter-reveal">?</a>
+						<br>
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="duplicate"> <code>duplicate</code></label> <a class="linkbuilder-help" href="#update-parameter-duplicate">?</a>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>notes</code></label> <a class="linkbuilder-help" href="#update-parameter-notes">?</a>
+						<textarea class="linkbuilder-field" name="notes" placeholder=""></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>prepend-notes</code></label> <a class="linkbuilder-help" href="#update-parameter-prepend-notes">?</a>
+						<textarea class="linkbuilder-field" name="prepend-notes" placeholder=""></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>append-notes</code></label> <a class="linkbuilder-help" href="#update-parameter-append-notes">?</a>
+						<textarea class="linkbuilder-field" name="append-notes" placeholder=""></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>when</code></label> <a class="linkbuilder-help" href="#update-parameter-when">?</a>
+						<input class="linkbuilder-field" type="text" name="when" placeholder="e.g. 2026-03-25 or in 3 days" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>deadline</code></label> <a class="linkbuilder-help" href="#update-parameter-deadline">?</a>
+						<input class="linkbuilder-field" type="text" name="deadline" placeholder="e.g. 2026-03-25 or in 3 days" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>tags</code></label> <a class="linkbuilder-help" href="#update-parameter-tags">?</a>
+						<input class="linkbuilder-field" type="text" name="tags" placeholder="e.g. home,errand" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>add-tags</code></label> <a class="linkbuilder-help" href="#update-parameter-add-tags">?</a>
+						<input class="linkbuilder-field" type="text" name="add-tags" placeholder="e.g. home,errand" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>checklist-items</code></label> <a class="linkbuilder-help" href="#update-parameter-checklist-items">?</a>
+						<textarea class="linkbuilder-field" name="checklist-items" placeholder="separated by new lines"></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>prepend-checklist-items</code></label> <a class="linkbuilder-help" href="#update-parameter-prepend-checklist-items">?</a>
+						<textarea class="linkbuilder-field" name="prepend-checklist-items" placeholder="separated by new lines"></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>append-checklist-items</code></label> <a class="linkbuilder-help" href="#update-parameter-append-checklist-items">?</a>
+						<textarea class="linkbuilder-field" name="append-checklist-items" placeholder="separated by new lines"></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>list</code></label> <a class="linkbuilder-help" href="#update-parameter-list">?</a> / 
+						<label><code>list-id</code></label> <a class="linkbuilder-help" href="#update-parameter-list-id">?</a>
+						<input class="linkbuilder-field" type="text" name="list" placeholder="project or area title" autocomplete="off">
+						<input class="linkbuilder-field" type="text" name="list-id" placeholder="or ID" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>heading</code></label> <a class="linkbuilder-help" href="#update-parameter-heading">?</a>
+						<input class="linkbuilder-field" type="text" name="heading" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>creation-date</code></label> <a class="linkbuilder-help" href="#update-parameter-creation-date">?</a>
+						<input class="linkbuilder-field" type="text" name="creation-date" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>completion-date</code></label> <a class="linkbuilder-help" href="#update-parameter-completion-date">?</a>
+						<input class="linkbuilder-field" type="text" name="completion-date" placeholder="" autocomplete="off">
+					</div>
+				</div>
+			</div> <!-- linkbuilder-command -->
+			
+		</div> <!-- linkbuilder-pane -->
+		
+		<h4 class="linkbuilder-title" id="linkbuilder-update-project">update-project</h4>
+		<div class="linkbuilder-pane">
+
+			<div class="linkbuilder-command" data-command="update-project">
+				<div class="linkbuilder-output">things:///...</div>
+				<div class="linkbuilder-form">
+					<div class="linkbuilder-row">
+						<label><code>auth-token</code></label> <a class="linkbuilder-help" href="#update-project-parameter-auth-token">?</a>
+						<input class="linkbuilder-field" type="text" name="auth-token" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>id</code></label> <a class="linkbuilder-help" href="#update-project-parameter-id">?</a>
+						<input class="linkbuilder-field" type="text" name="id" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>title</code></label> <a class="linkbuilder-help" href="#update-project-parameter-title">?</a>
+						<input class="linkbuilder-field" type="text" name="title" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="completed"> <code>completed</code></label> <a class="linkbuilder-help" href="#update-project-parameter-completed">?</a> 
+						or 
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="canceled"> <code>canceled</code></label> <a class="linkbuilder-help" href="#update-project-parameter-canceled">?</a>
+						<br>
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="reveal"> <code>reveal</code></label> <a class="linkbuilder-help" href="#update-project-parameter-reveal">?</a>
+						<br>
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="duplicate"> <code>duplicate</code></label> <a class="linkbuilder-help" href="#update-project-parameter-duplicate">?</a>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>notes</code></label> <a class="linkbuilder-help" href="#update-project-parameter-notes">?</a>
+						<textarea class="linkbuilder-field" name="notes" placeholder=""></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>prepend-notes</code></label> <a class="linkbuilder-help" href="#update-project-parameter-prepend-notes">?</a>
+						<textarea class="linkbuilder-field" name="prepend-notes" placeholder=""></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>append-notes</code></label> <a class="linkbuilder-help" href="#update-project-parameter-append-notes">?</a>
+						<textarea class="linkbuilder-field" name="append-notes" placeholder=""></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>when</code></label> <a class="linkbuilder-help" href="#update-project-parameter-when">?</a>
+						<input class="linkbuilder-field" type="text" name="when" placeholder="e.g. 2026-03-25 or in 3 days" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>deadline</code></label> <a class="linkbuilder-help" href="#update-project-parameter-deadline">?</a>
+						<input class="linkbuilder-field" type="text" name="deadline" placeholder="e.g. 2026-03-25 or in 3 days" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>tags</code></label> <a class="linkbuilder-help" href="#update-project-parameter-tags">?</a>
+						<input class="linkbuilder-field" type="text" name="tags" placeholder="e.g. home,errand" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>add-tags</code></label> <a class="linkbuilder-help" href="#update-project-parameter-add-tags">?</a>
+						<input class="linkbuilder-field" type="text" name="add-tags" placeholder="e.g. home,errand" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>area</code></label> <a class="linkbuilder-help" href="#update-project-parameter-area">?</a> / 
+						<label><code>area-id</code></label> <a class="linkbuilder-help" href="#update-project-parameter-area-id">?</a>
+						<input class="linkbuilder-field" type="text" name="area" placeholder="area title" autocomplete="off">
+						<input class="linkbuilder-field" type="text" name="area-id" placeholder="or ID" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>creation-date</code></label> <a class="linkbuilder-help" href="#update-project-parameter-creation-date">?</a>
+						<input class="linkbuilder-field" type="text" name="creation-date" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>completion-date</code></label> <a class="linkbuilder-help" href="#update-project-parameter-completion-date">?</a>
+						<input class="linkbuilder-field" type="text" name="completion-date" placeholder="" autocomplete="off">
+					</div>
+				</div>
+			</div> <!-- linkbuilder-command -->
+			
+		</div> <!-- linkbuilder-pane -->
+		
+		<h4 class="linkbuilder-title" id="linkbuilder-show">show</h4>
+		<div class="linkbuilder-pane">
+
+			<div class="linkbuilder-command" data-command="show">
+				<div class="linkbuilder-output">things:///...</div>
+				<div class="linkbuilder-form">
+					<div class="linkbuilder-row">
+						<label><code>id</code></label> <a class="linkbuilder-help" href="#show-parameter-id">?</a>
+						<input class="linkbuilder-field" type="text" name="id" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>query</code></label> <a class="linkbuilder-help" href="#show-parameter-query">?</a>
+						<input class="linkbuilder-field" type="text" name="query" placeholder="e.g. Vacation in Rome" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>filter</code></label> <a class="linkbuilder-help" href="#show-parameter-filter">?</a>
+						<input class="linkbuilder-field" type="text" name="filter" placeholder="" autocomplete="off">
+					</div>
+				</div>
+			</div> <!-- linkbuilder-command -->
+
+		</div> <!-- linkbuilder-pane -->
+		
+		<h4 class="linkbuilder-title" id="linkbuilder-search">search</h4>
+		<div class="linkbuilder-pane">
+
+			<div class="linkbuilder-command" data-command="search">
+				<div class="linkbuilder-output">things:///...</div>
+				<div class="linkbuilder-form">
+					<div class="linkbuilder-row">
+						<label><code>query</code></label> <a class="linkbuilder-help" href="#search-parameter-query">?</a>
+						<input class="linkbuilder-field" type="text" name="query" placeholder="" autocomplete="off">
+					</div>
+				</div>
+			</div> <!-- linkbuilder-command -->
+
+		</div> <!-- linkbuilder-pane -->
+				
+		<h4 class="linkbuilder-title" id="linkbuilder-json">json</h4>
+		<div class="linkbuilder-pane">
+
+			<div class="linkbuilder-command" data-command="json">
+				<div class="linkbuilder-output">things:///...</div>
+				<div class="linkbuilder-form">
+					<div class="linkbuilder-row">
+						<label><code>data</code></label> <a class="linkbuilder-help" href="#json-parameter-data">?</a>
+						<textarea class="linkbuilder-field" name="data" placeholder="JSON"></textarea>
+					</div>
+					<div class="linkbuilder-row">
+						<label><code>auth-token</code></label> <a class="linkbuilder-help" href="#json-parameter-auth-token">?</a>
+						<input class="linkbuilder-field" type="text" name="auth-token" placeholder="" autocomplete="off">
+					</div>
+					<div class="linkbuilder-row">
+						<label><input class="linkbuilder-checkbox" type="checkbox" name="reveal"> <code>reveal</code></label> <a class="linkbuilder-help" href="#json-parameter-reveal">?</a>
+					</div>
+				</div>
+			</div> <!-- linkbuilder-command -->
+
+		</div> <!-- linkbuilder-pane -->
+		
+	</div>
+
+</div> <!-- linkbuilder -->
+
+
+
+<h1 class="h1 is-strong" id="overview">Overview</h1>
+
+<p>Commands are sent to Things by constructing special URL links of the form:</p>
+
+<pre>things:///commandName?
+    parameter1=value1&amp;
+    parameter2=value2&amp;
+    ...
+</pre>
+
+<p>Opening these links will launch the app and execute the command. Here’s how you would tell Things to create a to-do:</p>
+
+<pre>things:///add?
+    title=Buy%20milk&amp;
+    notes=High%20fat
+</pre>
+
+<h2>Support for x-callback-url</h2>
+
+<p>All commands support the <a href="http://x-callback-url.com">x-callback-url</a> convention by calling the provided <code>x-success</code>, <code>x-error</code> or <code>x-cancel</code> callbacks as appropriate. Many commands return parameters to the <code>x-success</code> callback.</p>
+
+<h2 id="getting-ids">Getting IDs</h2>
+
+<p>Some commands require you to provide IDs of to-dos or lists. Here’s how you can retrieve them in Things.</p>
+
+<p>To get the ID of a to-do:<p>
+<ul>
+	<li>On the Mac, control-click on the to-do and choose <b class="keyword">Share</b> &rarr; <b class="keyword">Copy Link</b>.</li>
+	<li>On iOS, tap the to-do to open it and in the toolbar at the bottom, tap <span class="symbol for-things-3 for-more"></span> &rarr; <b class="keyword">Share</b> &rarr; <b class="keyword">Copy Link</b>.</li>
+</ul>
+
+<p>To get the ID of a list:<p>
+<ul>
+	<li>On the Mac, control-click on the list in the sidebar and choose <b class="keyword">Share</b> &rarr; <b class="keyword">Copy Link</b>.</li>
+	<li>On iOS, navigate into the list and at the top right of the screen, tap <span class="symbol for-things-3 for-tools"></span> &rarr; <b class="keyword">Share</b> &rarr; <b class="keyword">Copy Link</b>.</li>
+</ul>
+
+<h2 id="overview-authorization">Authorization</h2>
+
+<p>For security reasons, commands that modify existing Things data require an authorization token to run. This prevents malicious links from modifying your data. This token should be passed as the parameter <code>auth-token</code> along with the other parameters in the command. You can find your unique token in Things’ settings:</p>
+<ul>
+	<li>On the Mac, go to <b class="keyword">Things</b> &rarr; <b class="keyword">Settings</b> &rarr; <b class="keyword">General</b> &rarr; <b class="keyword">Enable Things URLs</b> &rarr; <b class="keyword">Manage</b>.</li>
+	<li>On iOS, go to <b class="keyword"><span class="symbol for-things-3 for-settings"></span>Settings</b> &rarr; <b class="keyword">General</b> &rarr; <b class="keyword">Things URLs</b>.</li>
+</ul>
+
+<h2 id="overview-data-types">Data Types</h2>
+
+<p>The commands use the following data types for their parameters:</p>
+
+<dl>
+	<dt><code>string</code></dt>
+	<dd>Percent encoded. Maximum un-encoded string length: 4,000 characters unless otherwise specified.</dd>
+	<dt id="overview-data-types-date-string"><code>date string</code></dt>
+	<dd>String. Either <code>today</code>, <code>tomorrow</code> or a date string of the form <code>yyyy-mm-dd</code>. E.g. <code>2017-09-29</code>. Things will also attempt to interpret natural language dates such as <code>in 3 days</code> or <code>next tuesday</code>. These must be provided in English, regardless of the user’s device language.</dd>
+	<dt id="overview-data-types-time-string"><code>time string</code></dt>
+	<dd>A string describing a time in the local time zone. E.g. 9:30PM or 21:30.</dd>
+	<dt id="overview-data-types-date-time-string"><code>date time string</code></dt>
+	<dd>A <code>date string</code> followed by the <code>@</code> symbol and then followed by a <code>time string</code>. E.g. 2026-02-25@14:00.</dd>
+	<dt id="overview-data-types-iso8601"><code>ISO8601 date time string</code></dt>
+	<dd>A date-time string conforming to <a href="https://www.iso.org/iso/home/standards/iso8601">ISO8601</a>. E.g. <code>2026-03-10T14:30:00Z</code> or <code>2026-03-10T14:30:00+01:00</code>.</dd>
+	<dt><code>boolean</code></dt>
+	<dd>A boolean value. Either <code>true</code> or <code>false</code>.</dd>
+	<dt><code>JSON string</code></dt>
+	<dd>A string in JSON format. See <a href="http://www.json.org/">http://www.json.org/</a> for more details.</dd>
+</dl>
+
+<h2>Enabling the URL Scheme</h2>
+
+<p>The first time you execute a command via the URL scheme, Things will ask you if you want to enable this feature. Simply answer with <b class="keyword">Enable</b>.</p>
+
+<p>You can later change this in Things’ settings:<p>
+<ul>
+	<li>On the Mac, go to <b class="keyword">Things</b> &rarr; <b class="keyword">Settings</b> &rarr; <b class="keyword">General</b>.</li>
+	<li>On iOS, go to <b class="keyword"><span class="symbol for-things-3 for-settings"></span>Settings</b> &rarr; <b class="keyword">General</b> &rarr; <b class="keyword">Things URLs</b>.</li>
+</ul>
+
+<h2>Version</h2>
+
+<p>The current version of the URL scheme is 2.</p>
+<!-- Overview -->
+
+
+
+<div id="commands"></div> <!-- invisible anchor for commands section -->
+
+
+
+<h1 class="h1 is-strong" id="add"><code>add</code> command</h1>
+
+<p>Add a to-do. For example, create a to-do in the inbox:</p>
+
+<pre>things:///add?
+    title=Book%20flights
+</pre>
+
+<p>Create a to-do with a tag and notes set to start this evening:</p>
+
+<pre>things:///add?
+    title=Buy%20milk&amp;
+    notes=Low%20fat.&amp;
+    when=evening&amp;
+    tags=Errand
+</pre>
+
+<p>Create several to-dos and add them to the Shopping project:</p>
+
+<pre>things:///add?
+    titles=Milk%0aBeer%0aCheese&amp;
+    list=Shopping
+</pre>
+
+<p>Create and schedule a to-do for next Monday in the Health area (with ID of <code>TryhwrjdiHEXfjgNtw81yt</code>):</p>
+
+<pre>things:///add?
+    title=Call%20doctor&amp;
+    when=next%20monday&amp;
+    list-id=TryhwrjdiHEXfjgNtw81yt
+</pre>
+
+<p>Create a to-do in the “This Evening” list with a reminder at 6PM:</p>
+
+<pre>things:///add?
+    title=Collect%20dry%20cleaning&amp;
+    when=evening@6pm
+</pre>
+
+<p>Note that a limit of 250 items can be added within a 10 second period.</p>
+
+<h2>Parameters</h2>
+
+<p>All parameters are optional. If neither the <code>when</code> nor <code>list-id</code> are specified, the to-do will be added to the inbox.</p>
+
+<dl>
+	<dt id="add-parameter-title"><code>title</code></dt>
+	<dd>String. The title of the to-do to add. Ignored if <code>titles</code> is also specified.</dd>
+	<dt id="add-parameter-titles"><code>titles</code></dt>
+	<dd>String separated by new lines (encoded to <code>%0a</code>). Use instead of <code>title</code> to create multiple to-dos. Takes priority over <code>title</code> and <code>show-quick-entry</code>. The other parameters are applied to all the created to-dos.</dd>
+	<dt id="add-parameter-notes"><code>notes</code></dt>
+	<dd>String. The text to use for the notes field of the to-do. Maximum unencoded length: 10,000 characters.</dd>
+	<dt id="add-parameter-when"><code>when</code></dt>
+	<dd>String. Possible values: <code>today</code>, <code>tomorrow</code>, <code>evening</code>, <code>anytime</code>, <code>someday</code>, a <a href="#overview-data-types-date-string">date string</a>, or a <a href="#overview-data-types-date-time-string">date time string</a>. Using a date time string adds a reminder for that time. The time component is ignored if <code>anytime</code> or <code>someday</code> is specified.</dd>
+	<dt id="add-parameter-deadline"><code>deadline</code></dt>
+	<dd><a href="#overview-data-types-date-string">Date string</a>. The deadline to apply to the to-do.</dd>
+	<dt id="add-parameter-tags"><code>tags</code></dt>
+	<dd>Comma separated strings corresponding to the titles of tags. Does not apply a tag if the specified tag doesn’t exist.</dd>
+	<dt id="add-parameter-checklist-items"><code>checklist-items</code></dt>
+	<dd>String separated by new lines (encoded to <code>%0a</code>). Checklist items to add to the to-do (maximum of 100).</dd>
+	<dt id="add-parameter-use-clipboard"><code>use-clipboard</code></dt>
+	<dd>String. Possible values can be <code>replace-title</code> (newlines overflow into notes, replacing them), <code>replace-notes</code>, or <code>replace-checklist-items</code> (newlines create multiple checklist rows). Takes priority over <code>title</code>, <code>notes</code>, or <code>checklist-items</code>.</dd>
+	<dt id="add-parameter-list-id"><code>list-id</code></dt>
+	<dd>String. The ID of a project or area to add to. Takes precedence over <code>list</code>.</dd>
+	<dt id="add-parameter-list"><code>list</code></dt>
+	<dd>String. The title of a project or area to add to. Ignored if <code>list-id</code> is present.</dd>
+	<dt id="add-parameter-heading-id"><code>heading-id</code></dt>
+	<dd>String. Takes precedence over <code>heading</code>. The ID of a heading within a project to add to. Ignored if a project is not specified, or if the heading doesn’t exist.</dd>
+	<dt id="add-parameter-heading"><code>heading</code></dt>
+	<dd>String. The title of a heading within a project to add to. Ignored if <code>heading-id</code> is present, if a project is not specified, or if the heading doesn’t exist.</dd>
+	<dt id="add-parameter-completed"><code>completed</code></dt>
+	<dd>Boolean. Whether or not the to-do should be set to complete. Default: <code>false</code>. Ignored if <code>canceled</code> is also set to <code>true</code>.</dd>
+	<dt id="add-parameter-canceled"><code>canceled</code></dt>
+	<dd>Boolean. Whether or not the to-do should be set to canceled. Default: <code>false</code>. Takes priority over <code>completed</code>.</dd>
+	<dt id="add-parameter-show-quick-entry"><code>show-quick-entry</code></dt>
+	<dd>Boolean. Whether or not to show the quick entry dialog (populated with the provided data) instead of adding a new to-do. Ignored if <code>titles</code> is specified. Default: <code>false</code>.</dd>
+	<dt id="add-parameter-reveal"><code>reveal</code></dt>
+	<dd>Boolean. Whether or not to navigate to and show the newly created to-do. If multiple to-dos have been created, the first one will be shown. Ignored if <code>show-quick-entry</code> is also set to <code>true</code>. Default: <code>false</code>.</dd>
+	<dt id="add-parameter-creation-date"><code>creation-date</code></dt>
+	<dd><a href="#overview-data-types-iso8601">ISO8601 date time string</a>. The date to set as the creation date for the to-do in the database. Ignored if the date is in the future.</dd>
+	<dt id="add-parameter-completion-date"><code>completion-date</code></dt>
+	<dd><a href="#overview-data-types-iso8601">ISO8601 date time string</a>. The date to set as the completion date for the to-do in the database. Ignored if the to-do is not completed or canceled, or if the date is in the future.</dd>
+</dl>
+
+<h2>Return parameters on <code>x-success</code></h2>
+
+<dl>
+	<dt><code>x-things-id</code></dt>
+	<dd>Comma separated string. The IDs of the to-dos created.</dd>
+</dl>
+<!-- add command -->
+
+
+
+<h1 class="h1 is-strong" id="add-project"><code>add-project</code> command</h1>
+
+<p>Add a project. For example, create a project to build a treehouse set to start today:</p>
+
+<pre>things:///add-project?
+    title=Build%20treehouse&amp;
+    when=today
+</pre>
+
+<p>Create a project inside the Family area:</p>
+
+<pre>things:///add-project?
+    title=Plan%20Birthday%20Party&amp;
+    area=Family
+</pre>
+
+<p>Create a project inside the Finance area (with ID of <code>Lg8UqVPXo2SbJNiBpDBBQ</code>) with a deadline of December 31:</p>
+
+<pre>things:///add-project?
+    title=Submit%20Tax&amp;
+    deadline=December%2031&amp;
+    area-id=Lg8UqVPXo2SbJNiBpDBBQ
+</pre>
+
+<h2>Parameters</h2>
+
+<p>All parameters are optional.</p>
+
+<dl>
+	<dt id="add-project-parameter-title"><code>title</code></dt>
+	<dd>String. The title of the project.</dd>
+	<dt id="add-project-parameter-notes"><code>notes</code></dt>
+	<dd>String. The text to use for the notes field of the project. Maximum unencoded length: 10,000 characters.</dd>
+	<dt id="add-project-parameter-when"><code>when</code></dt>
+	<dd>String. Possible values: <code>today</code>, <code>tomorrow</code>, <code>evening</code>, <code>anytime</code>,  <code>someday</code>, a <a href="#overview-data-types-date-string">date string</a>, or a <a href="#overview-data-types-date-time-string">date time string</a>. Using a date time string adds a reminder for that time. The time component is ignored if <code>anytime</code> or <code>someday</code> is specified.</dd>
+	<dt id="add-project-parameter-deadline"><code>deadline</code></dt>
+	<dd><a href="#overview-data-types-date-string">Date string</a>. The deadline to apply to the project.</dd>
+	<dt id="add-project-parameter-tags"><code>tags</code></dt>
+	<dd>Comma separated strings corresponding to the titles of tags. Does not apply a tag if the specified tag doesn’t exist.</dd>
+	<dt id="add-project-parameter-area-id"><code>area-id</code></dt>
+	<dd>String. The ID of an area to add to. Takes precedence over <code>area</code>.</dd>
+	<dt id="add-project-parameter-area"><code>area</code></dt>
+	<dd>String. The title of an area to add to. Ignored if <code>area-id</code> is present.</dd>
+	<dt id="add-project-parameter-to-dos"><code>to-dos</code></dt>
+	<dd>String separated by new lines (encoded to <code>%0a</code>). Titles of to-dos to create inside the project.</dd>
+	<dt id="add-project-parameter-completed"><code>completed</code></dt>
+	<dd>Boolean. Whether or not the project should be set to complete. Default: <code>false</code>. Ignored if <code>canceled</code> is also set to <code>true</code>. Will set all child to-dos to be completed.</dd>
+	<dt id="add-project-parameter-canceled"><code>canceled</code></dt>
+	<dd>Boolean. Whether or not the project should be set to canceled. Default: <code>false</code>. Takes priority over <code>completed</code>. Will set all child to-dos to be canceled.</dd>
+	<dt id="add-project-parameter-reveal"><code>reveal</code></dt>
+	<dd>Boolean. Whether or not to navigate into the newly created project. Default: <code>false</code>.</dd>
+	<dt id="add-project-parameter-creation-date"><code>creation-date</code></dt>
+	<dd><a href="#overview-data-types-iso8601">ISO8601 date time string</a>. The date to set as the creation date for the project in the database. If the <code>to-dos</code> parameter is also specified, this date is applied to them, too. Ignored if the date is in the future.</dd>
+	<dt id="add-project-parameter-completion-date"><code>completion-date</code></dt>
+	<dd><a href="#overview-data-types-iso8601">ISO8601 date time string</a>. The date to set as the completion date for the project in the database. If the <code>to-dos</code> parameter is also specified, this date is applied to them, too. Ignored if the to-do is not completed or canceled, or if the date is in the future.</dd>
+	
+</dl>
+
+<h2>Return parameters on <code>x-success</code></h2>
+
+<dl>
+	<dt><code>x-things-id</code></dt>
+	<dd>string. The ID of the project created.</dd>
+</dl>
+<!-- add-project command -->
+
+
+
+<h1 class="h1 is-strong" id="update"><code>update</code> command</h1>
+
+<p>Update an existing to-do. For example, set a to-do to start today:</p>
+
+<pre>things:///update?
+    id=SyJEz273ceSkabUbciM73A&amp;
+    when=today
+</pre>
+
+<p>Change the title of a to-do:</p>
+
+<pre>things:///update?
+    id=SyJEz273ceSkabUbciM73A&amp;
+    title=Buy%20bread
+</pre>
+
+<p>Append notes to a to-do:</p>
+
+<pre>things:///update?
+    id=SyJEz273ceSkabUbciM73A&amp;
+    append-notes=Wholemeal%20bread
+</pre>
+
+<p>Add some checklist items to a to-do:</p>
+
+<pre>things:///update?
+    id=SyJEz273ceSkabUbciM73A&amp;
+    append-checklist-items=Cheese%0aBread%0aEggplant
+</pre>
+
+<p>Remove the deadline from a to-do:</p>
+
+<pre>things:///update?
+    id=SyJEz273ceSkabUbciM73A&amp;
+    deadline=
+</pre>
+
+<h2>Parameters</h2>
+
+<p><code>id</code> and <code>auth-token</code> must be specified. All other parameters are optional. Including a parameter with an equals sign (<code>=</code>) but without a value will clear that value (see deadline example).</p>
+
+<dl>
+	<dt id="update-parameter-auth-token"><code>auth-token</code></dt>
+	<dd>String. The Things URL scheme <a href="#overview-authorization">authorization token</a>.</dd>
+	<dt id="update-parameter-id"><code>id</code></dt>
+	<dd>String. The ID of the to-do to update. Required.</dd>	
+	<dt id="update-parameter-title"><code>title</code></dt>
+	<dd>String. The title of the to-do. This will replace the existing title.</dd>		
+	<dt id="update-parameter-notes"><code>notes</code></dt>
+	<dd>String. The notes of the to-do. This will replace the existing notes. Maximum unencoded length: 10,000 characters.</dd>
+	<dt id="update-parameter-prepend-notes"><code>prepend-notes</code></dt>
+	<dd>String. Text to add before the existing notes of a to-do. Maximum unencoded length: 10,000 characters.</dd>
+	<dt id="update-parameter-append-notes"><code>append-notes</code></dt>
+	<dd>String. Text to add after the existing notes of a to-do. Maximum unencoded length: 10,000 characters.</dd>
+	<dt id="update-parameter-when"><code>when</code></dt>
+	<dd>String. Set the when field of a to-do. Possible values: <code>today</code>, <code>tomorrow</code>, <code>evening</code>, <code>someday</code>, a <a href="#overview-data-types-date-string">date string</a>, or a <a href="#overview-data-types-date-time-string">date time string</a>. Including a time adds a reminder for that time. The time component is ignored if <code>someday</code> is specified. This field cannot be updated on repeating to-dos.</dd>
+	<dt id="update-parameter-deadline"><code>deadline</code></dt>
+	<dd><a href="#overview-data-types-date-string">Date string</a>. The deadline to apply to the to-do. This field cannot be updated on repeating to-dos.</dd>
+	<dt id="update-parameter-tags"><code>tags</code></dt>
+	<dd>Comma separated strings corresponding to the titles of tags. Replaces all current tags. Does not apply a tag if the specified tag doesn’t exist.</dd>
+	<dt id="update-parameter-add-tags"><code>add-tags</code></dt>
+	<dd>Comma separated strings corresponding to the titles of tags. Adds the specified tags to a to-do. Does not apply a tag if the specified tag doesn’t exist.</dd>
+	<dt id="update-parameter-checklist-items"><code>checklist-items</code></dt>
+	<dd><code>\n</code> (encoded to <code>%0a</code>) separated strings. Set the checklist items of the to-do (maximum of 100). Will replace all existing checklist items.</dd>
+	<dt id="update-parameter-prepend-checklist-items"><code>prepend-checklist-items</code></dt>
+	<dd><code>\n</code> (encoded to <code>%0a</code>) separated strings. Add checklist items to the front of the list of checklist items in the to-do (maximum of 100).</dd>
+	<dt id="update-parameter-append-checklist-items"><code>append-checklist-items</code></dt>
+	<dd><code>\n</code> (encoded to <code>%0a</code>) separated strings. Add checklist items to the end of the list of checklist items in the to-do (maximum of 100).</dd>
+	<dt id="update-parameter-list-id"><code>list-id</code></dt>
+	<dd>String. The ID of a project or area to move the to-do into. Takes precedence over <code>list</code>.</dd>
+	<dt id="update-parameter-list"><code>list</code></dt>
+	<dd>String. The title of a project or area to move the to-do into. Ignored if <code>list-id</code> is present.</dd>
+	<dt id="update-parameter-heading-id"><code>heading-id</code></dt>
+	<dd>String. Takes precedence over <code>heading</code>. The ID of a heading within a project to move the to-do to. Ignored if the to-do is not in a project with the specified heading. Can be used together with <code>list</code> or <code>list-id</code>.</dd>
+	<dt id="update-parameter-heading"><code>heading</code></dt>
+	<dd>String. The title of a heading within a project to move the to-do to. Ignored if <code>heading-id</code> is present, or if the to-do is not in a project with the specified heading. Can be used together with <code>list</code> or <code>list-id</code>.</dd>
+	<dt id="update-parameter-completed"><code>completed</code></dt>
+	<dd>Boolean. Complete a to-do or set a to-do to incomplete. Ignored if <code>canceled</code> is also set to <code>true</code>. Setting <code>completed=false</code> on a canceled to-do will also mark it as incomplete. This field cannot be updated on repeating to-dos.</dd>
+	<dt id="update-parameter-canceled"><code>canceled</code></dt>
+	<dd>Boolean. Cancel a to-do or set a to-do to incomplete. Takes priority over <code>completed</code>. Setting <code>canceled=false</code> on a completed to-do will also mark it as incomplete. This field cannot be updated on repeating to-dos.</dd>
+	<dt id="update-parameter-reveal"><code>reveal</code></dt>
+	<dd>Boolean. Whether or not to navigate to and show the updated to-do. Default: <code>false</code>.</dd>
+	<dt id="update-parameter-duplicate"><code>duplicate</code></dt>
+	<dd>Boolean. Set to <code>true</code> to duplicate the to-do before updating it, leaving the original to-do untouched. Repeating to-dos cannot be duplicated. Default: <code>false</code>.</dd>
+	<dt id="update-parameter-creation-date"><code>creation-date</code></dt>
+	<dd><a href="#overview-data-types-iso8601">ISO8601 date time string</a>. Set the creation date for the to-do in the database. Ignored if the date is in the future.</dd>
+	<dt id="update-parameter-completion-date"><code>completion-date</code></dt>
+	<dd><a href="#overview-data-types-iso8601">ISO8601 date time string</a>. Set the completion date for the to-do in the database. Ignored if the to-do is not completed or canceled, or if the date is in the future. This field cannot be updated on repeating to-dos.</dd>
+</dl>
+
+<h2>Return parameters on <code>x-success</code></h2>
+
+<dl>
+	<dt><code>x-things-id</code></dt>
+	<dd>String. The ID of the to-do updated.</dd>
+</dl>
+<!-- update command -->
+
+
+
+<h1 class="h1 is-strong" id="update-project"><code>update-project</code> command</h1>
+
+<p>Update an existing project. For example, set a project to start tomorrow:</p>
+
+<pre>things:///update-project?
+    id=Jvj7EW1fLoScPhaw2JomCT&amp;
+    when=tomorrow
+</pre>
+
+<p>Add a tag to a project:</p>
+
+<pre>things:///update-project?
+    id=Jvj7EW1fLoScPhaw2JomCT&amp;
+    add-tags=Important
+</pre>
+
+<p>Prepend notes to a project:</p>
+
+<pre>things:///update-project?
+    id=Jvj7EW1fLoScPhaw2JomCT&amp;
+    prepend-notes=SFO%20to%20JFK.
+</pre>
+
+<p>Clear the deadline of a project:</p>
+
+<pre>things:///update-project?
+    id=Jvj7EW1fLoScPhaw2JomCT&amp;
+    deadline=
+</pre>
+
+<h2>Parameters</h2>
+
+<p><code>id</code> and <code>auth-token</code> must be specified. All other parameters are optional. Including a parameter with an equals sign (<code>=</code>) but without a value will clear that value (see deadline example).</p>
+
+<dl>
+	<dt id="update-project-parameter-auth-token"><code>auth-token</code></dt>
+	<dd>String. The Things URL scheme <a href="#overview-authorization">authorization token</a>.</dd>
+	<dt id="update-project-parameter-id"><code>id</code></dt>
+	<dd>String. The ID of the project to update. Required.</dd>	
+	<dt id="update-project-parameter-title"><code>title</code></dt>
+	<dd>String. The title of the project. This will replace the existing title.</dd>		
+	<dt id="update-project-parameter-notes"><code>notes</code></dt>
+	<dd>String. The notes of the project. This will replace the existing notes. Maximum unencoded length: 10,000 characters.</dd>
+	<dt id="update-project-parameter-prepend-notes"><code>prepend-notes</code></dt>
+	<dd>String. Text to add before the existing notes of a project. Maximum unencoded length: 10,000 characters.</dd>
+	<dt id="update-project-parameter-append-notes"><code>append-notes</code></dt>
+	<dd>String. Text to add after the existing notes of a project. Maximum unencoded length: 10,000 characters.</dd>
+	<dt id="update-project-parameter-when"><code>when</code></dt>
+	<dd>String. Set the when field of a project. Possible values: <code>today</code>, <code>tomorrow</code>, <code>evening</code>, <code>someday</code>, a <a href="#overview-data-types-date-string">date string</a>, or a <a href="#overview-data-types-date-time-string">date time string</a>. Including a time adds a reminder for that time. The time component is ignored if <code>someday</code> is specified. This field cannot be updated on repeating projects.</dd>
+	<dt id="update-project-parameter-deadline"><code>deadline</code></dt>
+	<dd><a href="#overview-data-types-date-string">Date string</a>. The deadline to apply to the project. This field cannot be updated on repeating projects.</dd>
+	<dt id="update-project-parameter-tags"><code>tags</code></dt>
+	<dd>Comma separated strings corresponding to the titles of tags. Replaces all current tags. Does not apply a tag if the specified tag doesn’t exist.</dd>
+	<dt id="update-project-parameter-add-tags"><code>add-tags</code></dt>
+	<dd>Comma separated strings corresponding to the titles of tags. Adds the specified tags to a project. Does not apply a tag if the specified tag doesn’t exist.</dd>
+	<dt id="update-project-parameter-area-id"><code>area-id</code></dt>
+	<dd>String. The ID of an area to move the project into. Takes precedence over <code>area</code>.</dd>
+	<dt id="update-project-parameter-area"><code>area</code></dt>
+	<dd>String. The title of an area to move the project into. Ignored if <code>area-id</code> is present.</dd>
+	<dt id="update-project-parameter-completed"><code>completed</code></dt>
+	<dd>Boolean. Complete a project or set a project to incomplete. Ignored if <code>canceled</code> is also set to <code>true</code>. Setting to <code>true</code> will be ignored unless all child to-dos are completed or canceled and all child headings archived. Setting  to <code>false</code> on a canceled project will mark it as incomplete. This field cannot be updated on repeating projects.</dd>
+	<dt id="update-project-parameter-canceled"><code>canceled</code></dt>
+	<dd>Boolean. Cancel a project or set a project to incomplete. Takes priority over <code>completed</code>. Setting to <code>true</code> will be ignored unless all child to-dos are completed or canceled and all child headings archived. Setting to <code>false</code> on a completed project will mark it as incomplete. This field cannot be updated on repeating projects.</dd>
+	<dt id="update-project-parameter-reveal"><code>reveal</code></dt>
+	<dd>Boolean. Whether or not to navigate to and show the updated project. Default: <code>false</code>.</dd>
+	<dt id="update-project-parameter-duplicate"><code>duplicate</code></dt>
+	<dd>Boolean. Set to <code>true</code> to duplicate the project before updating it, leaving the original project untouched. Repeating projects cannot be duplicated. Default: <code>false</code>.</dd>
+	<dt id="update-project-parameter-creation-date"><code>creation-date</code></dt>
+	<dd><a href="#overview-data-types-iso8601">ISO8601 date time string</a>. Set the creation date for the project in the database. Ignored if the date is in the future.</dd>
+	<dt id="update-project-parameter-completion-date"><code>completion-date</code></dt>
+	<dd><a href="#overview-data-types-iso8601">ISO8601 date time string</a>. Set the completion date for the project in the database. Ignored if the project is not completed or canceled, or if the date is in the future. This field cannot be updated on repeating projects.</dd>
+</dl>
+
+<h2>Return parameters on <code>x-success</code></h2>
+
+<dl>
+	<dt><code>x-things-id</code></dt>
+	<dd>String. The ID of the project updated.</dd>
+</dl>
+<!-- update-project command -->
+
+
+
+<h1 class="h1 is-strong" id="show"><code>show</code> command</h1>
+
+<p>Navigate to and show an area, project, tag or to-do, or one of the built-in lists, optionally filtering by one or more tags.</p>
+
+<p>Navigate to the Today list:</p>
+
+<pre>things:///show?
+    id=today
+</pre>
+
+<p>Show to-do with ID <code>GJJVZHE7SNu7xcVuH2xDDh</code>:</p>
+
+<pre>things:///show?
+    id=GJJVZHE7SNu7xcVuH2xDDh
+</pre>
+
+<p>Navigate into project with ID <code>Qi9pM1heCNAZxKREgQrwnJ</code>:</p>
+
+<pre>things:///show?
+    id=Qi9pM1heCNAZxKREgQrwnJ
+</pre>
+
+<p>Show project with title “Vacation”:</p>
+
+<pre>things:///show?
+    query=vacation
+</pre>
+
+<p>Show project with title “Vacation”, filtering by the “Errand” tag:</p>
+
+<pre>things:///show?
+    query=vacation&amp;
+    filter=errand
+</pre>
+
+<h2>Parameters</h2>
+
+<p>Either <code>id</code> or <code>query</code> must be specified; <code>filter</code> is optional.</p>
+
+<dl>
+	<dt id="show-parameter-id"><code>id</code></dt>
+	<dd>String. The ID of an area, project, tag or to-do to show; or one of the following built-in list IDs: <code>inbox</code>, <code>today</code>, <code>anytime</code>, <code>upcoming</code>, <code>someday</code>, <code>logbook</code>, <code>tomorrow</code>, <code>deadlines</code>, <code>repeating</code>, <code>all-projects</code>, <code>logged-projects</code>. Takes precedence over <code>query</code>.</dd>
+	<dt id="show-parameter-query"><code>query</code></dt>
+	<dd>String. The name of an area, project, tag or a built-in list to show. This is equivalent to entering the query text in to the quick find within Things and selecting the first result. Ignored if <code>id</code> is also set. Note: task cannot be shown using the <code>query</code> parameter; use the <code>id</code> parameter or the <code>search</code> command instead.</dd>
+	<dt id="show-parameter-filter"><code>filter</code></dt>
+	<dd>String. Comma separated strings corresponding to the titles of tags that the list should be filtered by.</dd>
+</dl>
+
+<h2>Return parameters on <code>x-success</code></h2>
+
+<p>none</p>
+<!-- show command -->
+
+
+
+<h1 class="h1 is-strong" id="search"><code>search</code> command</h1>
+
+<p>Invoke and show the search screen. For example, search for the text “vacation”:</p>
+
+<pre>things:///search?
+    query=vacation
+</pre>
+
+<p>Show the search screen without searching for anything:</p>
+
+<pre>things:///search
+</pre>
+
+<h2>Parameters</h2>
+
+<p>All parameters are optional.</p>
+
+<dl>
+	<dt id="search-parameter-query"><code>query</code></dt>
+	<dd>String. The search query.</dd>
+</dl>
+
+<h2>Return parameters on <code>x-success</code></h2>
+
+<p>none</p>
+<!-- search command -->
+
+
+
+<h1 class="h1 is-strong" id="version"><code>version</code> command</h1>
+
+<p>The version of the Things app and URL scheme.</p>
+
+<pre>things:///version
+</pre>
+
+<h2>Parameters</h2>
+
+<p>none</p>
+
+<h2>Return parameters on <code>x-success</code></h2>
+
+<dl>
+	<dt><code>x-things-scheme-version</code></dt>
+	<dd>String. The version of the Things URL scheme.</dd>
+	<dt><code>x-things-client-version</code></dt>
+	<dd>String. The build number of the app.</dd>
+</dl>
+<!-- version command -->
+
+
+
+<div id="for-developers"></div> <!-- invisible anchor for developers section -->
+
+
+
+<h1 class="h1 is-strong" id="json"><code>json</code> command (for Developers)</h1>
+
+<p>Things also has an advanced, JSON-based add command that allows more control over the projects and to-dos imported into Things. This command is intended to be used by app developers or other people familiar with scripting or programming.</p>
+
+<p>We’ve created a set of Swift helper classes that you can use to more easily generate the JSON needed for this command. Get the code from the <a href="https://github.com/culturedcode/ThingsJSONCoder">Things JSON Coder GitHub repository</a>.</p>
+
+<p>Example:</p>
+
+<pre class="pre is-scrolling">things:///json?data=
+  [
+    {
+      "type": "project",
+      "attributes": {
+        "title": "Go Shopping",
+        "items": [
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Bread"
+            }
+          },
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Milk"
+            }
+          }
+        ]
+      }
+    }
+  ]
+</pre>
+
+<h2>Parameters</h2>
+
+<dl>
+	<dt id="json-parameter-auth-token"><code>auth-token</code></dt>
+	<dd>String. The Things URL scheme <a href="#overview-authorization">authorization token</a>. This is required whenever the provided JSON data contains an <code>update</code> operation.</dd>
+	<dt id="json-parameter-data"><code>data</code></dt>
+	<dd>JSON string. The JSON should be an array containing <code>to-do</code> and <code>project</code> objects (see below).</dd>
+	<dt id="json-parameter-reveal"><code>reveal</code></dt>
+	<dd>Boolean. Whether or not to navigate to and show the newly created to-do or project. If multiple items have been created, the first one will be shown. Default: <code>false</code>.</dd>
+</dl>
+
+<h2>Return parameters on <code>x-success</code></h2>
+
+<dl>
+<dt><code>x-things-ids</code></dt>
+<dd>JSON string. An array of IDs of the to-dos and projects created that were specified in the top level JSON array. The IDs of the to-dos created inside projects are not returned.</dd>
+</dl>
+
+<h2>Describing Things objects in JSON</h2>
+
+<p>Each operation consists of the following fields:<p>
+
+<ul>
+	<li><code>type</code> The type of the object. These are described in more detail below. This field is required.</li>
+	<li><code>operation</code> The operation to perform on the object. Either <code>create</code> (create a new object) or <code>update</code> (update the fields of an existing object). If this field is not present, the operation is assumed to be <code>create</code>. Currently only <code>to-do</code> and <code>project</code> objects can be updated.</li>
+	<li><code>id</code> Required for update operations, this is the ID of the object to update.</li>
+	<li><code>attributes</code> A dictionary of attributes, which correspond to the properties of the object itself. The <code>attributes</code> field must be included but all attributes themselves are optional.</li>
+</ul>
+
+<pre>{
+    "type": "to-do",
+    "operation": "update",
+    "id": "Di9deEJeUkVZaDEdbnzQZw",
+    "attributes": {
+        "deadline": "today"
+    }
+}
+</pre>
+
+<h3>To-do</h3>
+
+<pre style="margin-top: -10px;">{
+  "type": "to-do",
+  "attributes": {
+    "title": "Milk"
+  }
+}
+</pre>
+
+<ul>
+	<li><code>type</code> is <code>to-do</code>.</li>
+	<li><code>attributes</code>:
+		<ul>
+			<li><code>title</code> - string. The title of the to-do.</li>
+			<li><code>notes</code> - string. The text to use for the notes field of the to-do. Maximum length: 10,000 characters.</li>
+			<li><code>when</code> - string. Possible values: <code>today</code>, <code>tomorrow</code>, <code>evening</code>, <code>anytime</code>, <code>someday</code>, a <a href="#overview-data-types-date-string">date string</a>, or a <a href="#overview-data-types-date-time-string">date time string</a>. Using a date time string adds a reminder for that time. The time component is ignored if <code>anytime</code> or <code>someday</code> is specified.</li>
+			<li><code>deadline</code> - <a href="#overview-data-types-date-string">date string</a>. The deadline to apply to the to-do.</li>
+			<li><code>tags</code> - array of strings corresponding to the titles of tags. Does not apply a tag if a tag with the specified title doesn’t exist.</li>
+			<li><code>checklist-items</code> - array of <code>checklist-item</code> objects (maximum of 100).</li>
+			<li><code>list-id</code> - string. The ID of a project or area to add to. Takes precedence over <code>list</code>. Ignored if the to-do is specified inside the <code>items</code> array of a <code>project</code> object.</li>
+			<li><code>list</code> - string. The title of a project or area to add to. Ignored if <code>list-id</code> is present, or if the to-do is specified inside the <code>items</code> array of a <code>project</code> object.</li>
+			<li><code>heading-id</code> - string. Takes precedence over <code>heading</code>. The ID of a heading within a project to add to. Ignored if a project is not specified, if the heading doesn’t exist, or if the to-do is specified inside the items array of a project object.</li>
+			<li><code>heading</code> - string. The title of a heading within a project to add to. Ignored if <code>heading-id</code> is present, if a project is not specified, if the heading doesn’t exist, or if the to-do is specified inside the items array of a project object.</li>
+			<li><code>completed</code> - boolean. Whether or not the to-do should be set to complete. Default: <code>false</code>. Ignored if <code>canceled</code> is also set to <code>true</code>.</li>
+			<li><code>canceled</code> - boolean. Whether or not the to-do should be set to canceled. Default: <code>false</code>. Takes priority over <code>completed</code>.</li>
+			<li><code>creation-date</code> - <a href="#overview-data-types-iso8601">ISO8601 date time string</a>. The date to set as the creation date for the to-do in the database. Ignored if the date is in the future.</li>
+			<li><code>completion-date</code> - <a href="#overview-data-types-iso8601">ISO8601 date time string</a>. The date to set as the completion date for the to-do in the database. Ignored if the to-do is not completed or canceled, or if the date is in the future.</li>
+		</ul>
+	</li>
+	<li><code>update</code> specific <code>attributes</code>. These attributes can only be used with <code>update</code> operations:
+		<ul>
+			<li><code>prepend-notes</code> - string. Text to add before the existing notes of a to-do. Maximum unencoded length: 10,000 characters.</li>
+			<li><code>append-notes</code> - string. Text to add after the existing notes of a to-do. Maximum unencoded length: 10,000 characters.</li>
+			<li><code>add-tags</code> - comma separated strings corresponding to the titles of tags. Adds the specified tags to a to-do. Does not apply a tag if the specified tag doesn’t exist.</li>
+			<li><code>prepend-checklist-items</code> - <code>\n</code> (encoded to <code>%0a</code>) separated strings. Add checklist items to the front of the list of checklist items in the to-do (maximum of 100).</li>
+			<li><code>append-checklist-items</code> - <code>\n</code> (encoded to <code>%0a</code>) separated strings. Add checklist items to the end of the list of checklist items in the to-do (maximum of 100).</li>
+		</ul>
+	</li>
+</ul>
+
+<h3>Project</h3>
+
+<pre style="margin-top: -10px;">{
+  "type": "project",
+  "attributes": {
+    "title": "Go Shopping",
+    "items": [
+      {
+        "type": "to-do",
+        "attributes": {
+          "title": "Bread"
+        }
+      }
+    ]
+  }
+}
+</pre>
+
+<ul>
+	<li><code>type</code> is <code>project</code>.</li>
+	<li><code>attributes</code>:
+		<ul>
+			<li><code>title</code> - string. The title of the project.</li>
+			<li><code>notes</code> - string. The text to use for the notes field (maximum length: 10,000 characters).</li>
+			<li><code>when</code> - string. Possible values: <code>today</code>, <code>tomorrow</code>, <code>evening</code>, <code>anytime</code>, <code>someday</code>, a <a href="#overview-data-types-date-string">date string</a>, or a <a href="#overview-data-types-date-time-string">date time string</a>. Using a date time string adds a reminder for that time. The time component is ignored if <code>anytime</code> or <code>someday</code> is specified.</li>
+			<li><code>deadline</code> - <a href="#overview-data-types-date-string">date string</a>. The deadline to apply.</li>
+			<li><code>tags</code> - array of strings corresponding to the titles of tags. Does not apply a tag if a tag with the specified title doesn’t exist.</li>
+			<li><code>area-id</code> - string. The ID of an area to add to. Takes precedence over <code>area</code>.</li>
+			<li><code>area</code> - string. The title of an area to add to. Ignored if <code>area-id</code> is present.</li>
+			<li><code>completed</code> - boolean. Whether or not the project should be set to complete. Default: <code>false</code>. Ignored unless all child to-dos are completed or canceled.</li>
+			<li><code>canceled</code> - boolean. Whether or not the project should be set to canceled. Default: <code>false</code>. Takes priority over <code>completed</code>. Ignored unless all child to-dos are completed or canceled.</li>
+			<li><code>creation-date</code> - <a href="#overview-data-types-iso8601">ISO8601 date time string</a>. The date to set as the creation date for the project in the database. Ignored if the date is in the future.</li>
+			<li><code>completion-date</code> - <a href="#overview-data-types-iso8601">ISO8601 date time string</a>. The date to set as the completion date for the project in the database. Ignored if the project is not completed or canceled, or if the date is in the future.</li>
+		</ul>
+	</li>
+	<li>
+		<code>create</code> specific <code>attributes</code>. These attributes can only be used with <code>create</code> operations:
+		<ul>
+    		<li><code>items</code> - array of <code>to-do</code> or <code>heading</code> objects. To add to-dos to an existing project, create individual <code>to-do</code> objects instead.</li>
+		</ul>
+	</li>
+	<li>
+		<code>update</code> specific <code>attributes</code>. These attributes can only be used with <code>update</code> operations:
+		<ul>
+    		<li><code>prepend-notes</code> String. Text to add before the existing notes of a project. Maximum unencoded length: 10,000 characters.</li>
+    		<li><code>append-notes</code> String. Text to add after the existing notes of a project. Maximum unencoded length: 10,000 characters.</li>
+    		<li><code>add-tags</code> Comma separated strings corresponding to the titles of tags. Adds the specified tags to a project. Does not apply a tag if the specified tag doesn’t exist.</li>
+		</ul>
+	</li>
+</ul>
+
+<h3>Heading</h3>
+
+<pre style="margin-top: -10px;">{
+  "type": "heading",
+  "attributes": {
+    "title": "Sights"
+  }
+}
+</pre>
+
+<ul>
+	<li><code>type</code> is <code>heading</code>.</li>
+	<li><code>attributes</code>:
+		<ul>
+			<li><code>title</code> - string. The title of the heading.</li>
+			<li><code>archived</code> - boolean. Whether or not the heading is archived. Default: <code>false</code>. Ignored unless all to-dos under the heading are completed or canceled.</li>
+		</ul>
+	</li>
+</ul>
+
+<h3>Checklist Item</h3>
+
+<pre style="margin-top: -10px;">{
+  "type": "checklist-item",
+  "attributes": {
+    "title": "Hotels",
+    "completed": true
+  }
+}
+</pre>
+
+<ul>
+	<li><code>type</code> is <code>checklist-item</code>.</li>
+	<li><code>attributes</code>:
+		<ul>
+			<li><code>title</code> - string. The title of the checklist item.</li>
+			<li><code>completed</code> - boolean. Whether or not the checklist item should be set to complete. Default: <code>false</code>. Ignored if <code>canceled</code> is also set to <code>true</code>.</li>
+			<li><code>canceled</code> - boolean. Whether or not the checklist item should be set to canceled. Default: <code>false</code>. Takes priority over <code>completed</code>.</li>
+		</ul>
+	</li>
+</ul>
+<!-- json command -->
+
+
+
+<h2>JSON Example</h2>
+
+<p>This example is not URL encoded for clarity.</p>
+
+<pre>things:///json?data=
+  [
+    {
+      "type": "project",
+      "attributes": {
+        "title": "Go Shopping",
+        "items": [
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Bread"
+            }
+          },
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Milk"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "project",
+      "attributes": {
+        "title": "Vacation in Rome",
+        "notes": "Some time in August.",
+        "area": "Family",
+        "items": [
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Ask Sarah for travel guide"
+            }
+          },
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Add dates to calendar"
+            }
+          },
+          {
+            "type": "heading",
+            "attributes": {
+              "title": "Sights"
+            }
+          },
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Vatican City"
+            }
+          },
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "The Colosseum",
+              "notes": "12€"
+            }
+          },
+          {
+            "type": "heading",
+            "attributes": {
+              "title": "Planning"
+            }
+          },
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Call Paolo",
+              "completed": true
+            }
+          },
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Book flights",
+              "when": "today"
+            }
+          },
+          {
+            "type": "to-do",
+            "attributes": {
+              "title": "Research",
+              "checklist-items": [
+                {
+                  "type": "checklist-item",
+                  "attributes": {
+                    "title": "Hotels",
+                    "completed": true
+                  }
+                },
+                {
+                  "type": "checklist-item",
+                  "attributes": {
+                    "title": "Transport from airport"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "to-do",
+      "attributes": {
+        "title": "Pick up dry cleaning",
+        "when": "evening",
+        "tags": [
+          "Errand"
+        ]
+      }
+    },
+    {
+      "type": "to-do",
+      "attributes": {
+        "title": "Submit report",
+        "deadline": "2026-02-01",
+        "list": "Work"
+      }
+    }
+  ]
+</pre>
+
+<h3>URL Encoded Example</h3>
+
+<p>All of the above JSON examples must have the white space removed and then be URL encoded before they can be used. For example:</p>
+
+<pre>things:///json?data=
+  [
+    {
+      "type": "to-do",
+      "attributes": {
+        "title": "Buy milk"
+      }
+    }
+  ]
+</pre>
+
+<p>After removing white space:</p>
+
+<pre class="pre is-scrolling">things:///json?data=[{"type":"to-do","attributes":{"title":"Buy milk"}}]
+</pre>
+
+<p>After URL encoding:</p>
+
+<pre class="pre is-scrolling">things:///json?data=%5B%7B%22type%22:%22to-do%22,%22attributes%22:%7B%22title%22:%22Buy%20milk%22%7D%7D%5D
+</pre>
+<!-- json example -->
+
+
+
+<h1 class="h1 is-strong" id="add-json"><code>add-json</code> command</h1>
+
+<p>Deprecated. The <code>json</code> command can be used for adding items via JSON.</p>
+
+
+
+<div class="relatedarticles">
+  <h6 class="relatedarticles-heading">Related Articles</h6>
+  <ul class="relatedarticles-list">
+  
+	<li><a class="fancylink is-minimal has-icon-shortcuts" href="../9596775/">Things Shortcuts Actions</a></li>
+	<li><a class="fancylink is-minimal" href="../2803572/">Using AppleScript</a></li>
+
+  </ul>
+</div>
+		
+
+
+				</div>
+			</div> <!-- article -->
+
+		</div>
+	</div> <!-- slice -->
+
+
+	<div class="slice for-contact">
+		<div class="container is-compact">
+
+			<div class="contactus">
+				<p class="contactus-question">
+					Didn’t find what you were looking for?
+				</p>
+				<div class="contactus-actions">
+					<a class="button is-strong" href="/contact/">Contact Us</a>
+				</div>
+			</div> <!-- contactus -->
+
+		</div>
+	</div> <!-- slice -->
+
+
+	<div class="slice for-footer">
+		<div class="container">
+
+
+			<div class="footer">
+				<div class="footer-row">
+					<div class="footer-column">
+						<h2 class="footer-headline">Products</h2>
+						<ul class="footer-list">
+							<li class="footer-item"><a class="footer-link" href="/things/mac/">Things for Mac</a></li>
+							<li class="footer-item"><a class="footer-link" href="/things/iphone/">Things for iPhone</a></li>
+							<li class="footer-item"><a class="footer-link" href="/things/watch/">Things for Watch</a></li>
+							<li class="footer-item"><a class="footer-link" href="/things/ipad/">Things for iPad</a></li>
+							<li class="footer-item"><a class="footer-link" href="/things/vision/">Things for Vision</a></li>
+						</ul>
+					</div>
+					<div class="footer-column">
+						<h2 class="footer-headline">Support</h2>
+						<ul class="footer-list">
+							<li class="footer-item"><a class="footer-link" href="/things/support/">Help</a></li>
+							<li class="footer-item"><a class="footer-link" href="/contact/">Contact</a></li>
+							<li class="footer-item"><a class="footer-link" href="/things/guide/">Getting Productive</a></li>
+						</ul>
+					</div>
+					<div class="footer-column">
+						<h2 class="footer-headline">News</h2>
+						<ul class="footer-list">
+							<li class="footer-item"><a class="footer-link" href="/things/blog/">Blog</a></li>
+							<li class="footer-item"><a class="footer-link" href="/mailinglist/subscribe/">Newsletter</a></li>
+							<li class="footer-item"><a class="footer-link" href="/status/">Status Board</a></li>
+							<li class="footer-item">
+								<a class="footer-link" href="/follow/bluesky/"><svg class="symbol" aria-label="Bluesky"><use href="/global/shared/2024-02-20/images/symbols-social.svg#bluesky"/></svg></a>
+								<a class="footer-link" href="/follow/x/"><svg class="symbol" aria-label="X"><use href="/global/shared/2024-02-20/images/symbols-social.svg#x"/></svg></a>
+								<a class="footer-link" href="/follow/threads/"><svg class="symbol" aria-label="Threads"><use href="/global/shared/2024-02-20/images/symbols-social.svg#threads"/></svg></a>
+								<a class="footer-link" href="/follow/instagram/"><svg class="symbol" aria-label="Instagram"><use href="/global/shared/2024-02-20/images/symbols-social.svg#instagram"/></svg></a>
+								<a class="footer-link" href="/follow/mastodon/"><svg class="symbol" aria-label="Mastodon"><use href="/global/shared/2024-02-20/images/symbols-social.svg#mastodon"/></svg></a>
+							</li>
+						</ul>
+					</div>
+					<div class="footer-column">
+						<h2 class="footer-headline">Company</h2>
+						<ul class="footer-list">
+							<li class="footer-item"><a class="footer-link" href="/about/">About Us</a></li>
+							<li class="footer-item"><a class="footer-link" href="/jobs/">Jobs <!--<span class="footer-badge">2</span>--> </a></li>
+							<li class="footer-item"><a class="footer-link" href="/privacy/">Privacy Policy</a></li>
+							<li class="footer-item"><a class="footer-link" href="/terms/">Terms</a></li>
+							<li class="footer-item"><a class="footer-link" href="/press/">Press</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-company">
+					<a class="footer-culturedcode" href="/">Cultured Code</a>
+				</div>
+			</div> <!-- footer -->
+
+
+		</div>
+	</div> <!-- slice -->
+
+
+</div> <!-- page -->
+
+
+<script src="/global/libraries/jquery/jquery-3.2.1.min.js"></script>
+<script src="/global/shared/2024-02-20/shared.min.js?breakcache=aj26xc5f"></script>
+<script src="/things/support/search.js?breakcache=hsi276wq"></script>
+<script src="/things/support/keywords.js?breakcache=n39sty1s"></script>
+<script src="/things/support/2022-12-13/support.min.js?breakcache=fjun7wcy"></script>
+<script>
+	$(document).ready(function() {
+		
+		browser.init($('html'));
+		// darkmode.init($('.is-auto-dark'));
+		tooltip.init($('.tooltip'));
+		platformbox.init($('.platformbox'));
+		tabs.init($('.tabs'));
+		cinema.init($('.cinema'));
+		remotecontrol.init($('.remotecontrol'));
+		stickybar.init($('.stickybar'));
+		quickfind.init($('.quickfind'), articles, keywords);
+		// Execute queued function calls
+		if (typeof queue !== 'undefined') {
+			for (var i=0; i<queue.length; ++i) {
+				queue[i]();
+			}
+		}
+		
+	});
+</script>
+
+</body>
+</html>

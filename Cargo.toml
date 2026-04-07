@@ -1,0 +1,59 @@
+[package]
+name = "things-cli"
+version = "0.1.0"
+edition = "2024"
+authors = ["Your Name <you@example.com>"]
+description = "A CLI tool for interacting with Things 3 via URL Scheme"
+license = "MIT"
+repository = "https://github.com/yourusername/things-cli"
+
+[[bin]]
+name = "things"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4.5", features = ["derive", "cargo", "env"] }
+clap_complete = "4.5"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Date/Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Interactive prompts
+dialoguer = "0.11"
+indicatif = "0.17"
+
+# URL encoding
+urlencoding = "2.1"
+
+# Config storage
+keyring = { version = "3.6", features = ["apple-native", "linux-native", "windows-native"] }
+dirs = "6.0"
+
+# Output styling
+colored = "2.2"
+regex = "1.11"
+shellexpand = "3.1"
+edit = "0.1"
+
+# Async runtime (for future x-callback support)
+tokio = { version = "1", features = ["full"], optional = true }
+glob = "0.3.3"
+rusqlite = { version = "0.39.0", features = ["bundled", "chrono"] }
+
+[features]
+default = []
+http-server = ["tokio"]
+
+[dev-dependencies]
+tempfile = "3.10"
+mockall = "0.12"
