@@ -20,14 +20,17 @@
 - [x] 数据库模块 - SQLite 读取 Things 数据库
 - [x] 配置模块 - keychain 存储 auth-token
 - [x] 编译警告清理
-- [x] 单元测试 (13 tests passing)
+- [x] 单元测试 (15 tests passing)
+- [x] 集成测试 (17 tests passing)
+- [x] E2E 测试套件 (10 个测试文件)
 - [x] README.md 文档
 - [x] LICENSE (MIT)
+- [x] GitHub 仓库
 
 ### 待完成
 
-- [x] 集成测试 (16 tests passing)
-- [ ] 实际功能测试 (需要 Things 3 应用)
+- [x] 集成测试 (17 tests passing)
+- [x] 实际功能测试 (E2E 测试套件已完成)
 - [ ] Shell 补全生成
 - [ ] Homebrew formula
 - [ ] GitHub Actions CI/CD
@@ -51,19 +54,20 @@
    - [x] `--repeat-until` 参数
    - [x] `--no-repeat` 取消重复
 
-### 🟡 中优先级
+### 🟡 中优先级 (部分实现)
 
 4. **执行模式选项**
    - [ ] `--dry-run` - 预览 URL
    - [ ] `--foreground` - 前台执行
 
 5. **更多列表视图**
-   - [ ] `things list trash`
-   - [ ] `things list created-today`
-   - [ ] `things list logbook`
+   - [x] `things list trash` - 已支持 (数据库查询)
+   - [x] `things list created-today` - 已实现
+   - [ ] `things list logbook` - 待添加
    - [ ] `things list all`
 
 6. **命令别名**
+   - [x] `things show` → `things open` (已实现)
    - [ ] `things create-project` → `project add`
    - [ ] `things create-area` → `area add`
 
@@ -86,7 +90,7 @@ cargo clippy
 
 ## 测试状态
 
-### 单元测试 (13 tests)
+### 单元测试 (15 tests)
 ```
 test core::parser::tests::test_parse_when_keywords ... ok
 test core::parser::tests::test_parse_when_date ... ok
@@ -98,12 +102,14 @@ test core::url_builder::tests::test_optional_params ... ok
 test core::url_builder::tests::test_with_auth ... ok
 test core::url_builder::tests::test_multiline ... ok
 test core::executor::tests::test_mock_executor ... ok
+test core::applescript::tests::test_script_injection_protection ... ok
+test core::applescript::tests::test_is_things_running_doesnt_crash ... ok
 test config::store::tests::test_config_serialization ... ok
 test config::store::tests::test_file_store ... ok
 test db::store::tests::test_database_path ... ok
 ```
 
-### 集成测试 (16 tests)
+### 集成测试 (17 tests)
 ```
 test test_batch_help ... ok
 test test_config_help ... ok
@@ -121,9 +127,21 @@ test test_todo_update_help ... ok
 test test_version ... ok
 test test_version_flag ... ok
 test test_batch_template_output ... ok
+test test_todo_add_with_repeat ... ok
 ```
 
-**Total: 42 tests passing**
+**Total: 47+ tests passing**
+
+### E2E 测试 (e2e/)
+- `test_basic.sh` - 基础命令测试
+- `test_todo.sh` - Todo 管理测试
+- `test_project.sh` - 项目管理测试
+- `test_area.sh` - 区域管理测试
+- `test_batch.sh` - 批量操作测试
+- `test_show.sh` - 显示和搜索测试
+- `test_all.sh` - 传统综合测试
+
+运行: `cd e2e && ./run_all.sh`
 
 ## 已知问题
 
@@ -131,7 +149,7 @@ test test_batch_template_output ... ok
 
 ## 下一步工作
 
-1. 添加更多单元测试覆盖边界情况
-2. 编写集成测试
-3. 测试与 Things 3 的实际交互
-4. 添加 shell 补全支持
+1. Shell 补全生成 (bash/zsh/fish)
+2. Homebrew formula
+3. GitHub Actions CI/CD
+4. 版本发布流程
