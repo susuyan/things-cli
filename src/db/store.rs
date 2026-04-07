@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use rusqlite::{Connection, Result as SqliteResult};
+use rusqlite::{Connection, OptionalExtension, Result as SqliteResult};
 use chrono::{NaiveDate, NaiveDateTime, TimeZone, Utc};
 
 use super::models::{Area, Project, Tag, Task, TaskFilter, TaskStatus};
@@ -211,6 +211,26 @@ impl ThingsDb {
         areas.map_err(Into::into)
     }
 
+    /// 获取单个区域
+    pub fn get_area_by_id(&self, id: &str) -> anyhow::Result<Option<Area>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT \"uuid\", \"title\", \"index\" FROM \"TMArea\"
+             WHERE \"uuid\" = ? AND \"trashed\" = 0"
+        )?;
+
+        let area = stmt
+            .query_row([id], |row| {
+                Ok(Area {
+                    uuid: row.get(0)?,
+                    title: row.get(1)?,
+                    index: row.get(2)?,
+                })
+            })
+            .optional()?;
+
+        Ok(area)
+    }
+
     /// 获取所有标签
     pub fn get_tags(&self) -> anyhow::Result<Vec<Tag>> {
         let mut stmt = self.conn.prepare(
@@ -252,12 +272,142 @@ impl ThingsDb {
         &self, title: &str) -> anyhow::Result<Option<String>> {
         let mut stmt = self.conn.prepare(
             "SELECT \"uuid\" FROM \"TMTask\"
-             WHERE \"title\" = ? AND \"trashed\" = 0
+             WHERE \"title\" = ? AND \"trashed\" = 0 AND \"type\" = 1
              ORDER BY \"creationDate\" DESC
              LIMIT 1"
         )?;
 
         let result: Option<String> = stmt.query_row([title], |row| row.get(0)).ok();
+        Ok(result)
+    }
+
+    /// 通过 ID 获取项目
+    pub fn get_project_by_id(&self, id: &str) -> anyhow::Result<Option<Project>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT
+                \"uuid\", \"title\", \"notes\", \"area\", \"deadline\", \"creationDate\", \"stopDate\"
+             FROM \"TMTask\"
+             WHERE \"uuid\" = ? AND \"trashed\" = 0 AND \"type\" = 1"
+        )?;
+
+        let project = stmt
+            .query_row([id], |row| {
+                let deadline_ts: Option<i64> = row.get(4)?;
+                let creation_ts: Option<f64> = row.get(5)?;
+                let stop_ts: Option<f64> = row.get(6)?;
+
+                Ok(Project {
+                    uuid: row.get(0)?,
+                    title: row.get(1)?,
+                    notes: row.get(2)?,
+                    area: row.get(3)?,
+                    tags: vec![],
+                    deadline: deadline_ts.and_then(timestamp_to_date),
+                    creation_date: creation_ts.and_then(timestamp_to_datetime),
+                    completion_date: stop_ts.and_then(timestamp_to_datetime),
+                })
+            })
+            .optional()?;
+
+        // 加载标签
+        if let Some(mut project) = project {
+            project.tags = self.get_project_tags(&project.uuid)?;
+            Ok(Some(project))
+        } else {
+            Ok(None)
+        }
+    }
+
+    /// 通过标题搜索项目
+    pub fn search_projects_by_title(&self, query: &str) -> anyhow::Result<Vec<Project>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT
+                \"uuid\", \"title\", \"notes\", \"area\", \"deadline\", \"creationDate\", \"stopDate\"
+             FROM \"TMTask\"
+             WHERE \"trashed\" = 0 AND \"type\" = 1 AND \"title\" LIKE ?
+             ORDER BY \"index\""
+        )?;
+
+        let search_pattern = format!("%{}%", query);
+
+        let project_iter = stmt.query_map([&search_pattern], |row| {
+            let deadline_ts: Option<i64> = row.get(4)?;
+            let creation_ts: Option<f64> = row.get(5)?;
+            let stop_ts: Option<f64> = row.get(6)?;
+
+            Ok(Project {
+                uuid: row.get(0)?,
+                title: row.get(1)?,
+                notes: row.get(2)?,
+                area: row.get(3)?,
+                tags: vec![],
+                deadline: deadline_ts.and_then(timestamp_to_date),
+                creation_date: creation_ts.and_then(timestamp_to_datetime),
+                completion_date: stop_ts.and_then(timestamp_to_datetime),
+            })
+        })?;
+
+        let mut result = vec![];
+        for project in project_iter {
+            result.push(project?);
+        }
+
+        // 加载标签
+        for project in &mut result {
+            project.tags = self.get_project_tags(&project.uuid)?;
+        }
+
+        Ok(result)
+    }
+
+    /// 通过标题关键词搜索任务
+    pub fn search_tasks_by_title(&self, query: &str) -> anyhow::Result<Vec<Task>> {
+        let like_pattern = format!("%{}%", query);
+
+        let sql = String::from(
+            "SELECT
+                t.\"uuid\", t.\"title\", t.\"notes\", t.\"start\", t.\"status\", t.\"trashed\",
+                t.\"project\", t.\"area\", t.\"deadline\", t.\"creationDate\", t.\"stopDate\", t.\"index\"
+             FROM TMTask t
+             WHERE t.\"type\" = 0 AND t.\"trashed\" = 0 AND t.\"title\" LIKE ?
+             ORDER BY t.\"creationDate\" DESC"
+        );
+
+        let mut stmt = self.conn.prepare(&sql)?;
+
+        let task_iter = stmt.query_map([&like_pattern], |row| {
+            let start: i64 = row.get(3)?;
+            let status: i64 = row.get(4)?;
+            let trashed: i64 = row.get(5)?;
+            let deadline_ts: Option<i64> = row.get(8)?;
+            let creation_ts: Option<f64> = row.get(9)?;
+            let stop_ts: Option<f64> = row.get(10)?;
+
+            Ok(Task {
+                uuid: row.get(0)?,
+                title: row.get(1)?,
+                notes: row.get(2)?,
+                status: TaskStatus::from_start_and_status(start, status, trashed != 0),
+                project: row.get(6)?,
+                area: row.get(7)?,
+                tags: vec![],
+                deadline: deadline_ts.and_then(timestamp_to_date),
+                creation_date: creation_ts.and_then(timestamp_to_datetime),
+                completion_date: stop_ts.and_then(timestamp_to_datetime),
+                index: row.get(11)?,
+            })
+        })?;
+
+        let mut result = vec![];
+        for task in task_iter {
+            result.push(task?);
+        }
+
+        // 加载标签
+        for task in &mut result {
+            task.tags = self.get_task_tags(&task.uuid)?;
+        }
+
         Ok(result)
     }
 }

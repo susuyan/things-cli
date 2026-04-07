@@ -1,155 +1,253 @@
-# Things CLI - 开发笔记
+# Things CLI
 
-## 项目状态
+A command-line interface for [Things 3](https://culturedcode.com/things/) on macOS, built with Rust.
 
-### 已完成
+## Overview
 
-- [x] 项目架构设计 (ARCHITECTURE.md)
-- [x] 核心模块实现
-  - [x] URL Builder - Things URL Scheme 构造
-  - [x] 数据模型 - Todo、Project、When 等
-  - [x] 执行器 - 调用系统 open 命令
-  - [x] 日期解析器 - 自然语言日期解析
-- [x] CLI 命令实现
-  - [x] todo add/update
-  - [x] project add/update
-  - [x] show/search
-  - [x] batch import/template
-  - [x] list (数据库查询)
-  - [x] config (keychain 配置)
-- [x] 数据库模块 - SQLite 读取 Things 数据库
-- [x] 配置模块 - keychain 存储 auth-token
-- [x] 编译警告清理
-- [x] 单元测试 (15 tests passing)
-- [x] 集成测试 (17 tests passing)
-- [x] E2E 测试套件 (10 个测试文件)
-- [x] README.md 文档
-- [x] LICENSE (MIT)
-- [x] GitHub 仓库
+Things CLI allows you to create, update, and manage todos, projects, and areas directly from the terminal using Things 3's URL Scheme and AppleScript integration.
 
-### 待完成
+### Key Features
 
-- [x] 集成测试 (17 tests passing)
-- [x] 实际功能测试 (E2E 测试套件已完成)
-- [ ] Shell 补全生成
-- [ ] Homebrew formula
-- [ ] GitHub Actions CI/CD
-- [ ] 版本发布流程
+- **Todo Management**: Add and update todos with rich metadata (notes, deadlines, tags, checklists)
+- **Project Management**: Create and manage projects with todos
+- **Area Management**: Full area support via AppleScript (add, update, delete)
+- **Smart Date Parsing**: Natural language dates like "today", "tomorrow", "in 3 days", "next monday"
+- **Database Integration**: Read and list tasks, projects, areas, and tags directly from Things database
+- **Batch Operations**: Import multiple items via JSON
+- **Secure Storage**: Auth tokens stored in macOS Keychain
+- **Repeat Tasks**: Support for daily, weekly, monthly, yearly repeating patterns
 
-### 🔴 高优先级 (对比 things3-cli 缺失的功能)
+## Quick Start
 
-详见 [COMPARISON.md](COMPARISON.md)
+### Prerequisites
 
-1. **删除功能** - AppleScript 实现 ✅
-   - [x] `things todo delete <ID>`
-   - [x] `things project delete <ID>`
-   - [x] `things area delete <ID>`
+- macOS with Things 3 installed
+- Rust toolchain (for building from source)
 
-2. **区域管理完整功能** ✅
-   - [x] `things area add "Area Name"`
-   - [x] `things area update <ID>`
-
-3. **重复任务支持** ✅
-   - [x] `--repeat` 参数 (daily, weekly, monthly, yearly)
-   - [x] `--repeat-until` 参数
-   - [x] `--no-repeat` 取消重复
-
-### 🟡 中优先级 (部分实现)
-
-4. **执行模式选项**
-   - [ ] `--dry-run` - 预览 URL
-   - [ ] `--foreground` - 前台执行
-
-5. **更多列表视图**
-   - [x] `things list trash` - 已支持 (数据库查询)
-   - [x] `things list created-today` - 已实现
-   - [ ] `things list logbook` - 待添加
-   - [ ] `things list all`
-
-6. **命令别名**
-   - [x] `things show` → `things open` (已实现)
-   - [ ] `things create-project` → `project add`
-   - [ ] `things create-area` → `area add`
-
-## 构建
+### Build and Run
 
 ```bash
-# 开发构建
-cargo build
-
-# 发布构建
+# Clone and build
+git clone https://github.com/susuyan/things-cli.git
+cd things-cli
 cargo build --release
 
-# 运行测试
-cargo test
+# Install locally
+cp target/release/things /usr/local/bin/
 
-# 检查代码
+# Verify
+things --version
+```
+
+### Basic Usage
+
+```bash
+# Add a simple todo
+things todo add "Buy milk"
+
+# Add a todo with details
+things todo add "Call mom" --when today --tags "Personal" --notes "Discuss weekend plans"
+
+# Add multiple todos
+things todo add "Task 1" "Task 2" "Task 3" --list "Shopping"
+
+# Show today's tasks
+things show today
+
+# List inbox tasks
+things list inbox
+
+# Search
+things search "work"
+```
+
+## Architecture
+
+Things CLI follows a layered architecture:
+
+```
+┌─────────────────────────────────────┐
+│           CLI Layer                 │
+│    (clap argument parsing)          │
+├─────────────────────────────────────┤
+│         Command Handlers            │
+│  (todo, project, area, list, etc.)  │
+├─────────────────────────────────────┤
+│          Core Logic                 │
+│  (URL Builder, Executor, Parser)    │
+├─────────────────────────────────────┤
+│       Integration Layer             │
+│  (Things URL Scheme, AppleScript,   │
+│   SQLite Database, Keychain)        │
+└─────────────────────────────────────┘
+```
+
+### Module Structure
+
+```
+src/
+├── main.rs              # Application entry point
+├── lib.rs               # Library exports
+├── cli/                 # CLI argument and command handling
+│   ├── args.rs          # clap argument definitions
+│   ├── commands/        # Command implementations
+│   │   ├── todo.rs
+│   │   ├── project.rs
+│   │   ├── area.rs
+│   │   ├── list.rs
+│   │   ├── show.rs
+│   │   ├── search.rs
+│   │   ├── batch.rs
+│   │   └── config.rs
+│   └── display.rs       # Output formatting
+├── core/                # Core business logic
+│   ├── url_builder.rs   # Things URL Scheme construction
+│   ├── executor.rs      # URL execution (open command)
+│   ├── applescript.rs   # AppleScript for unsupported operations
+│   ├── parser.rs        # Date and input parsing
+│   └── models.rs        # Data models
+├── db/                  # Database access
+│   └── store.rs         # SQLite queries for Things database
+├── config/              # Configuration management
+│   └── store.rs         # Keychain and file storage
+└── json/                # JSON batch operations
+    └── types.rs
+```
+
+For detailed architecture documentation, see [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Development Guide
+
+### Building
+
+```bash
+# Development build
+cargo build
+
+# Release build
+cargo build --release
+
+# Check without building
 cargo check
+
+# Run clippy lints
 cargo clippy
 ```
 
-## 测试状态
+### Project Conventions
 
-### 单元测试 (15 tests)
-```
-test core::parser::tests::test_parse_when_keywords ... ok
-test core::parser::tests::test_parse_when_date ... ok
-test core::parser::tests::test_parse_datetime ... ok
-test core::parser::tests::test_parse_tags ... ok
-test core::url_builder::tests::test_basic_url ... ok
-test core::url_builder::tests::test_multiple_params ... ok
-test core::url_builder::tests::test_optional_params ... ok
-test core::url_builder::tests::test_with_auth ... ok
-test core::url_builder::tests::test_multiline ... ok
-test core::executor::tests::test_mock_executor ... ok
-test core::applescript::tests::test_script_injection_protection ... ok
-test core::applescript::tests::test_is_things_running_doesnt_crash ... ok
-test config::store::tests::test_config_serialization ... ok
-test config::store::tests::test_file_store ... ok
-test db::store::tests::test_database_path ... ok
-```
+- **URL Scheme First**: Use Things URL Scheme for operations when available
+- **AppleScript Fallback**: Use AppleScript for operations not supported by URL Scheme (delete, area add/update)
+- **Database for Reading**: Query SQLite directly for listing operations (read-only)
+- **Secure by Default**: Store sensitive data (auth tokens) in macOS Keychain
 
-### 集成测试 (17 tests)
-```
-test test_batch_help ... ok
-test test_config_help ... ok
-test test_debug_flag ... ok
-test test_help ... ok
-test test_invalid_command ... ok
-test test_list_help ... ok
-test test_list_subcommands ... ok
-test test_project_add_help ... ok
-test test_search_help ... ok
-test test_show_help ... ok
-test test_todo_add_help ... ok
-test test_todo_add_missing_required ... ok
-test test_todo_update_help ... ok
-test test_version ... ok
-test test_version_flag ... ok
-test test_batch_template_output ... ok
-test test_todo_add_with_repeat ... ok
+### Adding New Commands
+
+1. Define arguments in `src/cli/args.rs`
+2. Implement handler in `src/cli/commands/<feature>.rs`
+3. Add to command router in `src/main.rs`
+4. Write tests in `tests/integration_tests.rs`
+5. Add E2E test in `e2e/test_<feature>.sh`
+
+## Testing
+
+The project has three levels of testing:
+
+### Unit Tests
+
+```bash
+cargo test
 ```
 
-**Total: 47+ tests passing**
+Unit tests cover core logic:
+- URL building and encoding
+- Date parsing
+- Model serialization
+- Config storage
 
-### E2E 测试 (e2e/)
-- `test_basic.sh` - 基础命令测试
-- `test_todo.sh` - Todo 管理测试
-- `test_project.sh` - 项目管理测试
-- `test_area.sh` - 区域管理测试
-- `test_batch.sh` - 批量操作测试
-- `test_show.sh` - 显示和搜索测试
-- `test_all.sh` - 传统综合测试
+### Integration Tests
 
-运行: `cd e2e && ./run_all.sh`
+```bash
+cargo test --test integration_tests
+```
 
-## 已知问题
+Integration tests verify CLI behavior without requiring Things 3 to be running:
+- Command parsing
+- Help output
+- Error handling
+- Flag validation
 
-- 无
+### E2E Tests
 
-## 下一步工作
+```bash
+cd e2e && ./run_all.sh
+```
 
-1. Shell 补全生成 (bash/zsh/fish)
-2. Homebrew formula
-3. GitHub Actions CI/CD
-4. 版本发布流程
+**Warning**: E2E tests create real data in your Things 3 database!
+
+E2E tests verify actual functionality against the Things 3 app:
+- Todo CRUD operations
+- Project management
+- Area management
+- Batch operations
+- Show and search
+
+## Configuration
+
+### Auth Token (Required for Updates)
+
+To update existing todos or projects, you need to set an auth token:
+
+1. Open Things 3 → Settings → General → Things URLs
+2. Copy your Authorization Token
+3. Run: `things config set-auth-token` and paste the token
+
+The token is securely stored in your macOS Keychain.
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `THINGS_AUTH_TOKEN` | Override auth token from keychain |
+| `THINGS_DEBUG` | Enable debug output |
+
+## Roadmap
+
+### Completed ✅
+
+- [x] Core URL Scheme integration
+- [x] Todo add/update
+- [x] Project add/update
+- [x] Area management (via AppleScript)
+- [x] Delete operations (via AppleScript)
+- [x] Repeat task support
+- [x] Database query for listings
+- [x] Batch import from JSON
+- [x] Shell completions
+- [x] E2E test suite
+- [x] GitHub repository setup
+
+### In Progress 🚧
+
+- [ ] Homebrew formula
+- [ ] GitHub Actions CI/CD
+- [ ] Version release workflow
+
+### Planned 📋
+
+- [ ] `--dry-run` mode for previewing URLs
+- [ ] `--foreground` execution mode
+- [ ] Additional list views (logbook, all)
+- [ ] Command aliases (create-project, create-area)
+- [ ] Interactive mode
+
+## Related Documents
+
+- [README.md](README.md) - User documentation
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Detailed architecture design
+- [COMPARISON.md](COMPARISON.md) - Comparison with things3-cli (Go)
+- [e2e/README.md](e2e/README.md) - E2E testing guide
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.

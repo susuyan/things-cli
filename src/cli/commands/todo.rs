@@ -7,7 +7,7 @@ use crate::core::executor::{Executor, OpenExecutor};
 use crate::core::parser;
 use crate::core::url_builder::{Command, ThingsUrl};
 
-pub fn handle(cmd: TodoCommand, global: &GlobalOpts) -> anyhow::Result<()> {
+pub fn handle(cmd: TodoCommand, global: &GlobalOpts, json: bool) -> anyhow::Result<()> {
     match cmd {
         TodoCommand::Add {
             titles,
@@ -45,6 +45,7 @@ pub fn handle(cmd: TodoCommand, global: &GlobalOpts) -> anyhow::Result<()> {
                 repeat,
                 repeat_until,
                 global,
+                json,
             )?;
         }
         TodoCommand::Update {
@@ -72,11 +73,17 @@ pub fn handle(cmd: TodoCommand, global: &GlobalOpts) -> anyhow::Result<()> {
             handle_update(
                 id, title, notes, prepend_notes, append_notes, when, deadline, tags, add_tags,
                 list, list_id, heading, complete, uncomplete, cancel, duplicate, reveal,
-                repeat, repeat_until, no_repeat, global,
+                repeat, repeat_until, no_repeat, global, json,
             )?;
         }
         TodoCommand::Delete { id, force } => {
-            handle_delete(&id, force)?;
+            handle_delete(&id, force, json)?;
+        }
+        TodoCommand::Get { id } => {
+            handle_get(&id, global.json)?;
+        }
+        TodoCommand::Find { query } => {
+            handle_find(&query, global.json)?;
         }
     }
 
@@ -102,6 +109,7 @@ fn handle_add(
     repeat: Option<String>,
     repeat_until: Option<String>,
     global: &GlobalOpts,
+    json: bool,
 ) -> anyhow::Result<()> {
     let store = CompositeStore::new()?;
     let config = store.load_config()?;
@@ -236,11 +244,52 @@ fn handle_add(
         eprintln!("URL: {}", url);
     }
 
+    // dry-run 模式：只打印 URL 不执行
+    if global.dry_run {
+        if json {
+            let output = serde_json::json!({
+                "success": true,
+                "operation": "add",
+                "type": "todo",
+                "dry_run": true,
+                "data": {
+                    "titles": titles,
+                    "url": url
+                }
+            });
+            println!("{}", serde_json::to_string_pretty(&output)?);
+        } else {
+            eprintln!("[Dry Run] URL: {}", url);
+        }
+        return Ok(());
+    }
+
     // 执行
     let executor = OpenExecutor::new();
     let result = executor.execute(&url)?;
 
-    if result.success {
+    if json {
+        let output = if result.success {
+            serde_json::json!({
+                "success": true,
+                "operation": "add",
+                "type": "todo",
+                "data": {
+                    "titles": titles,
+                    "count": titles.len()
+                }
+            })
+        } else {
+            serde_json::json!({
+                "success": false,
+                "error": {
+                    "code": "EXECUTION_FAILED",
+                    "message": "Failed to add todo"
+                }
+            })
+        };
+        println!("{}", serde_json::to_string_pretty(&output)?);
+    } else if result.success {
         if titles.len() == 1 {
             println!("✓ Todo added: {}", titles[0]);
         } else {
@@ -274,6 +323,7 @@ fn handle_update(
     repeat_until: Option<String>,
     no_repeat: bool,
     global: &GlobalOpts,
+    json: bool,
 ) -> anyhow::Result<()> {
     let store = CompositeStore::new()?;
 
@@ -358,11 +408,51 @@ fn handle_update(
         eprintln!("URL: {}", url);
     }
 
+    // dry-run 模式：只打印 URL 不执行
+    if global.dry_run {
+        if json {
+            let output = serde_json::json!({
+                "success": true,
+                "operation": "update",
+                "type": "todo",
+                "dry_run": true,
+                "data": {
+                    "id": id,
+                    "url": url
+                }
+            });
+            println!("{}", serde_json::to_string_pretty(&output)?);
+        } else {
+            eprintln!("[Dry Run] URL: {}", url);
+        }
+        return Ok(());
+    }
+
     // 执行
     let executor = OpenExecutor::new();
     let result = executor.execute(&url)?;
 
-    if result.success {
+    if json {
+        let output = if result.success {
+            serde_json::json!({
+                "success": true,
+                "operation": "update",
+                "type": "todo",
+                "data": {
+                    "id": id
+                }
+            })
+        } else {
+            serde_json::json!({
+                "success": false,
+                "error": {
+                    "code": "EXECUTION_FAILED",
+                    "message": format!("Failed to update todo: {}", id)
+                }
+            })
+        };
+        println!("{}", serde_json::to_string_pretty(&output)?);
+    } else if result.success {
         println!("✓ Todo updated: {}", id);
     }
 
@@ -371,23 +461,268 @@ fn handle_update(
 
 use crate::core::applescript;
 
-fn handle_delete(id: &str, force: bool) -> anyhow::Result<()> {
-    // 确认删除
-    if !force {
+fn handle_delete(id: &str, force: bool, json: bool) -> anyhow::Result<()> {
+    // 确认删除（非 JSON 模式下）
+    if !force && !json {
         let confirmed = dialoguer::Confirm::new()
             .with_prompt(format!("Are you sure you want to delete todo '{}'", id))
             .default(false)
             .interact()?;
 
         if !confirmed {
-            println!("Cancelled");
+            if json {
+                let output = serde_json::json!({
+                    "success": false,
+                    "error": {
+                        "code": "CANCELLED",
+                        "message": "Deletion cancelled by user"
+                    }
+                });
+                println!("{}", serde_json::to_string_pretty(&output)?);
+            } else {
+                println!("Cancelled");
+            }
             return Ok(());
         }
     }
 
     // 使用 AppleScript 删除
-    applescript::delete_todo(id)?;
+    match applescript::delete_todo(id) {
+        Ok(_) => {
+            if json {
+                let output = serde_json::json!({
+                    "success": true,
+                    "operation": "delete",
+                    "type": "todo",
+                    "data": {
+                        "id": id
+                    }
+                });
+                println!("{}", serde_json::to_string_pretty(&output)?);
+            } else {
+                println!("✓ Todo deleted: {}", id);
+            }
+        }
+        Err(e) => {
+            if json {
+                let output = serde_json::json!({
+                    "success": false,
+                    "error": {
+                        "code": "DELETE_FAILED",
+                        "message": e.to_string()
+                    }
+                });
+                println!("{}", serde_json::to_string_pretty(&output)?);
+            } else {
+                return Err(e);
+            }
+        }
+    }
 
-    println!("✓ Todo deleted: {}", id);
     Ok(())
+}
+
+use crate::db::ThingsDb;
+use colored::Colorize;
+use serde::Serialize;
+
+/// JSON 输出结构
+#[derive(Serialize)]
+struct TaskJsonOutput {
+    success: bool,
+    #[serde(rename = "type")]
+    data_type: String,
+    data: crate::db::Task,
+}
+
+fn handle_get(id: &str, json: bool) -> anyhow::Result<()> {
+    // 检查数据库是否可访问
+    if let Err(e) = crate::db::check_database_access() {
+        if json {
+            let error_output = serde_json::json!({
+                "success": false,
+                "error": e.to_string()
+            });
+            println!("{}", serde_json::to_string_pretty(&error_output)?);
+        } else {
+            eprintln!("{}", e);
+        }
+        return Ok(());
+    }
+
+    let db = ThingsDb::open_default()?;
+
+    // 获取任务
+    let task = db.get_task(id)?;
+
+    match task {
+        Some(task) => {
+            if json {
+                let output = TaskJsonOutput {
+                    success: true,
+                    data_type: "task".to_string(),
+                    data: task,
+                };
+                println!("{}", serde_json::to_string_pretty(&output)?);
+            } else {
+                print_task_details(&task);
+            }
+        }
+        None => {
+            if json {
+                let error_output = serde_json::json!({
+                    "success": false,
+                    "error": format!("Task not found: {}", id)
+                });
+                println!("{}", serde_json::to_string_pretty(&error_output)?);
+            } else {
+                eprintln!("{} Task not found: {}", "Error:".red().bold(), id);
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn print_task_details(task: &crate::db::Task) {
+    println!("{}", "Task Details".bold().underline());
+    println!();
+
+    // ID
+    println!("  {}: {}", "ID".bold(), task.uuid);
+
+    // Title
+    println!("  {}: {}", "Title".bold(), task.title);
+
+    // Status
+    let status_str = match task.status {
+        crate::db::TaskStatus::Inbox => "Inbox".normal(),
+        crate::db::TaskStatus::Today => "Today".green(),
+        crate::db::TaskStatus::Evening => "This Evening".blue(),
+        crate::db::TaskStatus::Anytime => "Anytime".normal(),
+        crate::db::TaskStatus::Upcoming => "Upcoming".yellow(),
+        crate::db::TaskStatus::Someday => "Someday".dimmed(),
+        crate::db::TaskStatus::Completed => "Completed".green(),
+        crate::db::TaskStatus::Canceled => "Canceled".red(),
+        crate::db::TaskStatus::Trashed => "Trashed".red().dimmed(),
+    };
+    println!("  {}: {}", "Status".bold(), status_str);
+
+    // Notes
+    if let Some(ref notes) = task.notes {
+        if !notes.is_empty() {
+            println!("  {}: {}", "Notes".bold(), notes);
+        }
+    }
+
+    // Tags
+    if !task.tags.is_empty() {
+        let tags_str = format!("#{}", task.tags.join(" #"));
+        println!("  {}: {}", "Tags".bold(), tags_str.cyan());
+    }
+
+    // Deadline
+    if let Some(deadline) = task.deadline {
+        println!("  {}: {}", "Deadline".bold(), deadline.to_string().yellow());
+    }
+
+    // Project
+    if let Some(ref project) = task.project {
+        println!("  {}: {}", "Project".bold(), project.truecolor(128, 128, 128));
+    }
+
+    // Area
+    if let Some(ref area) = task.area {
+        println!("  {}: {}", "Area".bold(), area.truecolor(128, 128, 128));
+    }
+
+    // Creation Date
+    if let Some(creation_date) = task.creation_date {
+        println!("  {}: {}", "Created".bold(), creation_date.format("%Y-%m-%d %H:%M"));
+    }
+
+    // Completion Date
+    if let Some(completion_date) = task.completion_date {
+        let formatted = completion_date.format("%Y-%m-%d %H:%M").to_string();
+        println!("  {}: {}", "Completed".bold(), formatted.green());
+    }
+}
+
+/// JSON 输出结构（任务列表）
+#[derive(Serialize)]
+struct TasksJsonOutput {
+    success: bool,
+    #[serde(rename = "type")]
+    data_type: String,
+    count: usize,
+    data: Vec<crate::db::Task>,
+}
+
+fn handle_find(query: &str, json: bool) -> anyhow::Result<()> {
+    // 检查数据库是否可访问
+    if let Err(e) = crate::db::check_database_access() {
+        if json {
+            let error_output = serde_json::json!({
+                "success": false,
+                "error": e.to_string()
+            });
+            println!("{}", serde_json::to_string_pretty(&error_output)?);
+        } else {
+            eprintln!("{}", e);
+        }
+        return Ok(());
+    }
+
+    let db = ThingsDb::open_default()?;
+
+    // 搜索任务
+    let tasks = db.search_tasks_by_title(query)?;
+
+    if json {
+        let output = TasksJsonOutput {
+            success: true,
+            data_type: "tasks".to_string(),
+            count: tasks.len(),
+            data: tasks,
+        };
+        println!("{}", serde_json::to_string_pretty(&output)?);
+    } else {
+        print_found_tasks(&tasks, query);
+    }
+
+    Ok(())
+}
+
+fn print_found_tasks(tasks: &[crate::db::Task], query: &str) {
+    if tasks.is_empty() {
+        println!("No tasks found matching '{}'", query.dimmed());
+        return;
+    }
+
+    println!("{} {}", "Found".bold(), format!("{} tasks:", tasks.len()).bold());
+
+    for task in tasks {
+        let status_icon = match task.status {
+            crate::db::TaskStatus::Completed => "✓".green(),
+            crate::db::TaskStatus::Canceled => "✗".red(),
+            _ => "•".normal(),
+        };
+
+        let title = if task.status == crate::db::TaskStatus::Completed
+            || task.status == crate::db::TaskStatus::Canceled
+        {
+            task.title.as_str().dimmed().to_string()
+        } else {
+            task.title.clone()
+        };
+
+        let short_id = &task.uuid[..8];
+
+        println!(
+            "  {} {} {}",
+            status_icon,
+            title,
+            format!("[{}]", short_id).truecolor(128, 128, 128)
+        );
+    }
 }

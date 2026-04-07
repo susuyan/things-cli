@@ -1,12 +1,43 @@
 use colored::Colorize;
+use serde::Serialize;
 
 use crate::cli::args::ListCommand;
 use crate::db::ThingsDb;
 
-pub fn handle(cmd: ListCommand) -> anyhow::Result<()> {
+/// JSON 输出结构
+#[derive(Serialize)]
+struct JsonOutput<T: Serialize> {
+    success: bool,
+    #[serde(rename = "type")]
+    data_type: String,
+    count: usize,
+    data: Vec<T>,
+}
+
+impl<T: Serialize> JsonOutput<T> {
+    fn new(data_type: &str, data: Vec<T>) -> Self {
+        let count = data.len();
+        Self {
+            success: true,
+            data_type: data_type.to_string(),
+            count,
+            data,
+        }
+    }
+}
+
+pub fn handle(cmd: ListCommand, json: bool) -> anyhow::Result<()> {
     // 检查数据库是否可访问
     if let Err(e) = crate::db::check_database_access() {
-        eprintln!("{}", e);
+        if json {
+            let error_output = serde_json::json!({
+                "success": false,
+                "error": e.to_string()
+            });
+            println!("{}", serde_json::to_string_pretty(&error_output)?);
+        } else {
+            eprintln!("{}", e);
+        }
         return Ok(());
     }
 
@@ -15,58 +46,116 @@ pub fn handle(cmd: ListCommand) -> anyhow::Result<()> {
     match cmd {
         ListCommand::Inbox => {
             let tasks = db.get_inbox_tasks()?;
-            print_tasks("Inbox", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("Inbox", &tasks);
+            }
         }
         ListCommand::Today => {
             let tasks = db.get_today_tasks()?;
-            print_tasks("Today", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("Today", &tasks);
+            }
         }
         ListCommand::Evening => {
             let tasks = db.get_evening_tasks()?;
-            print_tasks("This Evening", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("This Evening", &tasks);
+            }
         }
         ListCommand::Upcoming => {
             let tasks = db.get_upcoming_tasks()?;
-            print_tasks("Upcoming", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("Upcoming", &tasks);
+            }
         }
         ListCommand::Someday => {
             let tasks = db.get_someday_tasks()?;
-            print_tasks("Someday", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("Someday", &tasks);
+            }
         }
         ListCommand::Anytime => {
             let tasks = db.get_anytime_tasks()?;
-            print_tasks("Anytime", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("Anytime", &tasks);
+            }
         }
         ListCommand::Completed => {
             let tasks = db.get_completed_tasks()?;
-            print_tasks("Completed", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("Completed", &tasks);
+            }
         }
         ListCommand::CompletedToday => {
             let tasks = db.get_completed_today()?;
-            print_tasks("Completed Today", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("Completed Today", &tasks);
+            }
         }
         ListCommand::Canceled => {
             let tasks = db.get_canceled_tasks()?;
-            print_tasks("Canceled", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks("Canceled", &tasks);
+            }
         }
         ListCommand::Deadlines => {
             let tasks = db.get_tasks_with_deadlines()?;
-            print_tasks_with_deadlines("Tasks with Deadlines", &tasks);
+            if json {
+                print_json("tasks", tasks)?;
+            } else {
+                print_tasks_with_deadlines("Tasks with Deadlines", &tasks);
+            }
         }
         ListCommand::Projects => {
             let projects = db.get_projects(None)?;
-            print_projects(&projects);
+            if json {
+                print_json("projects", projects)?;
+            } else {
+                print_projects(&projects);
+            }
         }
         ListCommand::Areas => {
             let areas = db.get_areas()?;
-            print_areas(&areas);
+            if json {
+                print_json("areas", areas)?;
+            } else {
+                print_areas(&areas);
+            }
         }
         ListCommand::Tags => {
             let tags = db.get_tags()?;
-            print_tags(&tags);
+            if json {
+                print_json("tags", tags)?;
+            } else {
+                print_tags(&tags);
+            }
         }
     }
 
+    Ok(())
+}
+
+fn print_json<T: Serialize>(data_type: &str, data: Vec<T>) -> anyhow::Result<()> {
+    let output = JsonOutput::new(data_type, data);
+    println!("{}", serde_json::to_string_pretty(&output)?);
     Ok(())
 }
 

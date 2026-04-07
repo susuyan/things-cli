@@ -1,7 +1,8 @@
 use chrono::{NaiveDate, NaiveDateTime};
+use serde::Serialize;
 
 /// 任务状态
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum TaskStatus {
     Inbox,
     Today,
@@ -54,7 +55,7 @@ impl TaskStatus {
 }
 
 /// 任务
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 #[allow(dead_code)]
 pub struct Task {
     pub uuid: String,
@@ -71,7 +72,7 @@ pub struct Task {
 }
 
 /// 项目
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 #[allow(dead_code)]
 pub struct Project {
     pub uuid: String,
@@ -85,7 +86,7 @@ pub struct Project {
 }
 
 /// 区域
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 #[allow(dead_code)]
 pub struct Area {
     pub uuid: String,
@@ -94,7 +95,7 @@ pub struct Area {
 }
 
 /// 标签
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Tag {
     pub uuid: String,
     pub title: String,

@@ -10,6 +10,14 @@ pub struct GlobalOpts {
     /// 使用指定的 auth-token（覆盖配置）
     #[arg(long, global = true, env = "THINGS_AUTH_TOKEN")]
     pub auth_token: Option<String>,
+
+    /// 预览模式，只显示 URL 不执行
+    #[arg(long, global = true)]
+    pub dry_run: bool,
+
+    /// 以 JSON 格式输出
+    #[arg(long, global = true)]
+    pub json: bool,
 }
 
 /// 待办事项命令
@@ -173,6 +181,18 @@ pub enum TodoCommand {
         #[arg(short, long)]
         force: bool,
     },
+
+    /// 获取待办事项详情
+    Get {
+        /// 待办事项 ID
+        id: String,
+    },
+
+    /// 通过标题搜索待办事项
+    Find {
+        /// 搜索关键词
+        query: String,
+    },
 }
 
 /// 项目命令
@@ -303,6 +323,18 @@ pub enum ProjectCommand {
         #[arg(short, long)]
         force: bool,
     },
+
+    /// 获取项目详情
+    Get {
+        /// 项目 ID
+        id: String,
+    },
+
+    /// 搜索项目
+    Find {
+        /// 搜索关键词
+        title: String,
+    },
 }
 
 /// 显示命令
@@ -384,6 +416,12 @@ pub enum AreaCommand {
         /// 强制删除，不提示确认
         #[arg(short, long)]
         force: bool,
+    },
+
+    /// 获取区域详情
+    Get {
+        /// 区域 ID
+        id: String,
     },
 }
 
