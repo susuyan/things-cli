@@ -230,12 +230,13 @@ The token is configured via the THINGS_AUTH_TOKEN environment variable.
 - [x] **Agent Support: `--dry-run` preview mode**
 - [x] **Agent Support: `get` and `find` commands**
 - [x] **Agent Support: Environment variable auth token**
-
-### In Progress 🚧
-
 - [x] Homebrew formula
 - [x] GitHub Actions CI/CD
 - [x] Version release workflow
+
+### In Progress 🚧
+
+(None)
 
 ### Planned 📋
 
