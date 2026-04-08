@@ -2,11 +2,11 @@ use colored::Colorize;
 use dialoguer::{Confirm, Password};
 
 use crate::cli::args::ConfigCommand;
-use crate::config::store::{CompositeStore, ConfigStore, AUTH_TOKEN_ENV_VAR};
+use crate::config::store::{ConfigStore, FileStore, AUTH_TOKEN_ENV_VAR};
 
 /// 处理配置命令
 pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
-    let store = CompositeStore::new()?;
+    let store = FileStore::new()?;
 
     match cmd {
         ConfigCommand::SetAuthToken { token } => {
@@ -27,12 +27,11 @@ pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
                     .interact()?
             };
 
-            store.set_auth_token(&token)?;
             println!();
             println!("{}", "Auth token configuration".bold());
             println!();
             println!(
-                "For Agent/Scripting usage, set the environment variable:",
+                "Set the environment variable in your shell:"
             );
             println!("  export {}='{}'", AUTH_TOKEN_ENV_VAR.cyan(), token);
             println!();
@@ -41,8 +40,6 @@ pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
                 "~/.zshrc".dimmed(),
                 "~/.bashrc".dimmed()
             );
-            println!();
-            println!("Note: Token also saved to keychain for backward compatibility.",);
         }
 
         ConfigCommand::DeleteAuthToken => {
@@ -53,13 +50,13 @@ pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
             }
 
             let confirm = Confirm::new()
-                .with_prompt("Are you sure you want to delete the auth-token?")
+                .with_prompt("Are you sure you want to remove the auth-token from environment?")
                 .default(false)
                 .interact()?;
 
             if confirm {
-                store.delete_auth_token()?;
-                println!("{}", "✓ Auth token deleted".green());
+                println!("{}", "Please remove the following from your shell profile:".yellow());
+                println!("  unset {}", AUTH_TOKEN_ENV_VAR.cyan());
             } else {
                 println!("Cancelled");
             }
@@ -67,21 +64,15 @@ pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
 
         ConfigCommand::CheckAuthToken => {
             // 检查环境变量
-            let env_token = std::env::var(AUTH_TOKEN_ENV_VAR).ok();
-            let keychain_token = store.has_auth_token()?;
+            let has_token = store.has_auth_token()?;
 
-            if env_token.is_some() {
+            if has_token {
                 println!("{}", "✓ Auth token is configured via environment variable".green());
                 println!("  Variable: {}", AUTH_TOKEN_ENV_VAR.cyan());
-            } else if keychain_token {
-                println!("{}", "✓ Auth token is configured in keychain".green());
-                println!();
-                println!("Note: Consider moving to environment variable for Agent usage:");
-                println!("  export {}='your-token'", AUTH_TOKEN_ENV_VAR.cyan());
             } else {
                 println!("{}", "✗ Auth token is not configured".red());
                 println!();
-                println!("For Agent usage, set the environment variable:");
+                println!("Set the environment variable:");
                 println!("  export {}='your-token'", AUTH_TOKEN_ENV_VAR.cyan());
                 println!();
                 println!("Or run {} for interactive setup", "things config set-auth-token".cyan());
@@ -129,22 +120,16 @@ pub fn handle(cmd: ConfigCommand) -> anyhow::Result<()> {
 }
 
 /// 显示当前配置
-fn show_config(store: &CompositeStore) -> anyhow::Result<()> {
+fn show_config(store: &FileStore) -> anyhow::Result<()> {
     println!("{}", "Things CLI Configuration".bold().underline());
     println!();
 
     // 显示 auth-token 状态
-    let env_token = std::env::var(AUTH_TOKEN_ENV_VAR).ok();
-    let keychain_token = store.has_auth_token()?;
+    let has_token = store.has_auth_token()?;
 
-    if env_token.is_some() {
+    if has_token {
         println!("Auth Token: {}", "✓ configured via environment variable".green());
         println!("  Variable: {}", AUTH_TOKEN_ENV_VAR.cyan());
-    } else if keychain_token {
-        println!("Auth Token: {}", "✓ configured in keychain".green());
-        println!();
-        println!("Tip: For Agent usage, use environment variable:");
-        println!("  export {}='your-token'", AUTH_TOKEN_ENV_VAR.cyan());
     } else {
         println!("Auth Token: {}", "✗ not configured".red());
     }

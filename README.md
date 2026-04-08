@@ -12,7 +12,7 @@ A command-line interface for [Things 3](https://culturedcode.com/things/) on mac
 - **Smart Date Parsing**: Natural language dates like "today", "tomorrow", "in 3 days", "next monday"
 - **Database Integration**: Read and list tasks, projects, areas, and tags directly from Things database
 - **Batch Operations**: Import multiple items via JSON
-- **Secure Storage**: Auth tokens stored in macOS Keychain
+- **Auth via Environment**: Auth token configured via environment variable
 - **Shell Completions**: Support for bash, zsh, fish, and PowerShell
 
 ## Installation
@@ -62,11 +62,7 @@ things list inbox
 
 ### Auth Token (Required for Updates)
 
-To update existing todos or projects, you need an auth token.
-
-#### For Agent/Scripting Usage (Recommended)
-
-Set the token as an environment variable:
+To update existing todos or projects, you need to set an auth token as an environment variable:
 
 ```bash
 export THINGS_AUTH_TOKEN="your-token-here"
@@ -74,13 +70,9 @@ export THINGS_AUTH_TOKEN="your-token-here"
 
 Add this to your `~/.zshrc`, `~/.bashrc`, or project `.env` file.
 
-#### For Interactive Usage
-
-1. Open Things 3 → Settings → General → Things URLs
+To get your token:
+1. Open Things 3 → Settings → General → Things URLs → Manage
 2. Copy your Authorization Token
-3. Run: `things config set-auth-token` and paste the token
-
-The token will be stored in your macOS Keychain.
 
 ### Default Settings
 
@@ -292,7 +284,7 @@ The `--when` parameter accepts various formats:
 
 | Variable | Description |
 |----------|-------------|
-| `THINGS_AUTH_TOKEN` | Override auth token from keychain |
+| `THINGS_AUTH_TOKEN` | Auth token for updating todos/projects |
 | `THINGS_DEBUG` | Enable debug output |
 
 ## Shell Completions

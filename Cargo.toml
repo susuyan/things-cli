@@ -36,7 +36,6 @@ indicatif = "0.17"
 urlencoding = "2.1"
 
 # Config storage
-keyring = { version = "3.6", features = ["apple-native", "linux-native", "windows-native"] }
 dirs = "6.0"
 
 # Output styling

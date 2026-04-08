@@ -14,7 +14,7 @@ Things CLI allows you to create, update, and manage todos, projects, and areas d
 - **Smart Date Parsing**: Natural language dates like "today", "tomorrow", "in 3 days", "next monday"
 - **Database Integration**: Read and list tasks, projects, areas, and tags directly from Things database
 - **Batch Operations**: Import multiple items via JSON
-- **Secure Storage**: Auth tokens stored in macOS Keychain
+- **Environment Auth**: Auth token via THINGS_AUTH_TOKEN environment variable
 - **Repeat Tasks**: Support for daily, weekly, monthly, yearly repeating patterns
 
 ## Quick Start
@@ -78,7 +78,7 @@ Things CLI follows a layered architecture:
 ├─────────────────────────────────────┤
 │       Integration Layer             │
 │  (Things URL Scheme, AppleScript,   │
-│   SQLite Database, Keychain)        │
+│   SQLite Database)                  │
 └─────────────────────────────────────┘
 ```
 
@@ -109,7 +109,7 @@ src/
 ├── db/                  # Database access
 │   └── store.rs         # SQLite queries for Things database
 ├── config/              # Configuration management
-│   └── store.rs         # Keychain and file storage
+│   └── store.rs         # File storage (environment for auth)
 └── json/                # JSON batch operations
     └── types.rs
 ```
@@ -139,7 +139,7 @@ cargo clippy
 - **URL Scheme First**: Use Things URL Scheme for operations when available
 - **AppleScript Fallback**: Use AppleScript for operations not supported by URL Scheme (delete, area add/update)
 - **Database for Reading**: Query SQLite directly for listing operations (read-only)
-- **Secure by Default**: Store sensitive data (auth tokens) in macOS Keychain
+- **Environment Variables**: Auth token configured via THINGS_AUTH_TOKEN
 
 ### Adding New Commands
 
@@ -202,13 +202,13 @@ To update existing todos or projects, you need to set an auth token:
 2. Copy your Authorization Token
 3. Run: `things config set-auth-token` and paste the token
 
-The token is securely stored in your macOS Keychain.
+The token is configured via the THINGS_AUTH_TOKEN environment variable.
 
 ### Environment Variables
 
 | Variable | Description |
 |----------|-------------|
-| `THINGS_AUTH_TOKEN` | Override auth token from keychain |
+| `THINGS_AUTH_TOKEN` | Auth token for updates |
 | `THINGS_DEBUG` | Enable debug output |
 
 ## Roadmap

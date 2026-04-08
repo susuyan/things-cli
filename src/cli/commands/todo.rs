@@ -2,7 +2,7 @@ use std::io::{self, BufRead};
 
 use crate::cli::args::TodoCommand;
 use crate::cli::GlobalOpts;
-use crate::config::store::{CompositeStore, ConfigStore};
+use crate::config::store::{FileStore, ConfigStore};
 use crate::core::executor::{Executor, OpenExecutor};
 use crate::core::parser;
 use crate::core::url_builder::{Command, ThingsUrl};
@@ -111,7 +111,7 @@ fn handle_add(
     global: &GlobalOpts,
     json: bool,
 ) -> anyhow::Result<()> {
-    let store = CompositeStore::new()?;
+    let store = FileStore::new()?;
     let config = store.load_config()?;
 
     // 收集标题
@@ -325,7 +325,7 @@ fn handle_update(
     global: &GlobalOpts,
     json: bool,
 ) -> anyhow::Result<()> {
-    let store = CompositeStore::new()?;
+    let store = FileStore::new()?;
 
     // 需要 auth-token
     let auth_token = global
