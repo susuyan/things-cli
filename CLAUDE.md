@@ -234,8 +234,8 @@ The token is configured via the THINGS_AUTH_TOKEN environment variable.
 ### In Progress 🚧
 
 - [ ] Homebrew formula
-- [ ] GitHub Actions CI/CD
-- [ ] Version release workflow
+- [x] GitHub Actions CI/CD
+- [x] Version release workflow
 
 ### Planned 📋
 
