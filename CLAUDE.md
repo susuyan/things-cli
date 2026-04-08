@@ -233,7 +233,7 @@ The token is configured via the THINGS_AUTH_TOKEN environment variable.
 
 ### In Progress 🚧
 
-- [ ] Homebrew formula
+- [x] Homebrew formula
 - [x] GitHub Actions CI/CD
 - [x] Version release workflow
 

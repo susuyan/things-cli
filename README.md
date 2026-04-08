@@ -47,9 +47,10 @@ cargo build --release
 sudo cp target/release/things /usr/local/bin/
 ```
 
-### Homebrew (Coming Soon)
+### Homebrew (Recommended)
 
 ```bash
+brew tap susuyan/susuyan
 brew install things-cli
 ```
 
