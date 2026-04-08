@@ -22,10 +22,24 @@ A command-line interface for [Things 3](https://culturedcode.com/things/) on mac
 - macOS with Things 3 installed
 - Rust toolchain (for building from source)
 
+### Install Pre-built Binary (Recommended)
+
+Download the latest release for macOS:
+
+```bash
+# Download latest release
+curl -L -o things https://github.com/susuyan/things-cli/releases/latest/download/things-macos
+chmod +x things
+sudo mv things /usr/local/bin/
+
+# Verify installation
+things --version
+```
+
 ### Build from Source
 
 ```bash
-git clone https://github.com/yourusername/things-cli.git
+git clone https://github.com/susuyan/things-cli.git
 cd things-cli
 cargo build --release
 

@@ -2,10 +2,10 @@
 name = "things-cli"
 version = "0.1.0"
 edition = "2024"
-authors = ["Your Name <you@example.com>"]
+authors = ["susuyan <hi@susuyan.com>"]
 description = "A CLI tool for interacting with Things 3 via URL Scheme"
 license = "MIT"
-repository = "https://github.com/yourusername/things-cli"
+repository = "https://github.com/susuyan/things-cli"
 
 [[bin]]
 name = "things"
