@@ -7,8 +7,8 @@ use std::process::Command as ProcessCommand;
 
 use super::ThingsError;
 
-/// Execute AppleScript and return the result
-pub fn execute_applescript(script: &str) -> anyhow::Result<String> {
+/// Execute AppleScript raw command (without Things app check)
+fn execute_applescript_raw(script: &str) -> anyhow::Result<String> {
     let output = ProcessCommand::new("osascript")
         .arg("-e")
         .arg(script)
@@ -26,11 +26,21 @@ pub fn execute_applescript(script: &str) -> anyhow::Result<String> {
     Ok(stdout.trim().to_string())
 }
 
+/// Execute AppleScript and return the result
+/// Checks if Things 3 is running before executing
+pub fn execute_applescript(script: &str) -> anyhow::Result<String> {
+    // Check if Things is running before executing AppleScript
+    if !is_things_running()? {
+        return Err(ThingsError::AppNotRunning.into());
+    }
+
+    execute_applescript_raw(script)
+}
+
 /// Check if Things 3 is running
-#[allow(dead_code)]
 pub fn is_things_running() -> anyhow::Result<bool> {
     let script = r#"tell application "System Events" to return (name of processes) contains "Things3""#;
-    let result = execute_applescript(script)?;
+    let result = execute_applescript_raw(script)?;
     Ok(result == "true")
 }
 
@@ -62,11 +72,11 @@ end tell"#,
     let result = execute_applescript(&script)?;
 
     if result == "not found" {
-        return Err(ThingsError::ThingsError(format!("Todo with ID '{}' not found", id)).into());
+        return Err(ThingsError::AppError(format!("Todo with ID '{}' not found", id)).into());
     }
 
     if result != "deleted" {
-        return Err(ThingsError::ThingsError(format!("Failed to delete todo: {}", result)).into());
+        return Err(ThingsError::AppError(format!("Failed to delete todo: {}", result)).into());
     }
 
     Ok(())
@@ -99,11 +109,11 @@ end tell"#,
     let result = execute_applescript(&script)?;
 
     if result == "not found" {
-        return Err(ThingsError::ThingsError(format!("Project with ID '{}' not found", id)).into());
+        return Err(ThingsError::AppError(format!("Project with ID '{}' not found", id)).into());
     }
 
     if result != "deleted" {
-        return Err(ThingsError::ThingsError(format!("Failed to delete project: {}", result)).into());
+        return Err(ThingsError::AppError(format!("Failed to delete project: {}", result)).into());
     }
 
     Ok(())
@@ -136,11 +146,11 @@ end tell"#,
     let result = execute_applescript(&script)?;
 
     if result == "not found" {
-        return Err(ThingsError::ThingsError(format!("Area with ID '{}' not found", id)).into());
+        return Err(ThingsError::AppError(format!("Area with ID '{}' not found", id)).into());
     }
 
     if result != "deleted" {
-        return Err(ThingsError::ThingsError(format!("Failed to delete area: {}", result)).into());
+        return Err(ThingsError::AppError(format!("Failed to delete area: {}", result)).into());
     }
 
     Ok(())

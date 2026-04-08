@@ -13,10 +13,13 @@ pub use url_builder::{Command, ThingsUrl};
 
 /// 核心错误类型
 #[derive(Error, Debug)]
-#[allow(dead_code, clippy::enum_variant_names)]
+#[allow(dead_code)]
 pub enum ThingsError {
     #[error("Things app not found. Please install Things 3 from the App Store.")]
     AppNotFound,
+
+    #[error("Things 3 is not running. Please start the app.")]
+    AppNotRunning,
 
     #[error("URL scheme not enabled. Please enable it in Things settings (Settings > General > Things URLs).")]
     SchemeNotEnabled,
@@ -34,7 +37,7 @@ pub enum ThingsError {
     InvalidId(String),
 
     #[error("Things returned an error: {0}")]
-    ThingsError(String),
+    AppError(String),
 
     #[error("Command failed: {0}")]
     CommandFailed(String),
@@ -49,6 +52,3 @@ pub enum ThingsError {
     UrlEncode(String),
 }
 
-/// 结果类型别名
-#[allow(dead_code)]
-pub type Result<T> = std::result::Result<T, ThingsError>;
