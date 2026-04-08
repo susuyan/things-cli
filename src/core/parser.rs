@@ -133,14 +133,11 @@ fn parse_natural_language(input: &str) -> Result<When, ThingsError> {
     if let Some(captures) = regex::Regex::new(r"in\s+(\d+)\s+days?")
         .ok()
         .and_then(|re| re.captures(&normalized))
-    {
-        if let Some(days_str) = captures.get(1) {
-            if let Ok(days) = days_str.as_str().parse::<i64>() {
+        && let Some(days_str) = captures.get(1)
+            && let Ok(days) = days_str.as_str().parse::<i64>() {
                 let date = Local::now() + chrono::Duration::days(days);
                 return Ok(When::Date(date.date_naive()));
             }
-        }
-    }
 
     // next week
     if normalized.contains("next week") {

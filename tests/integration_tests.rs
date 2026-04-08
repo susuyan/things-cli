@@ -193,7 +193,7 @@ fn test_list_subcommands() {
         let output = things_bin()
             .args(["list", cmd, "--help"])
             .output()
-            .expect(&format!("Failed to execute list {}", cmd));
+            .unwrap_or_else(|_| panic!("Failed to execute list {}", cmd));
 
         assert!(output.status.success(), "list {} should have valid help", cmd);
     }

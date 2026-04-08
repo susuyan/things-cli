@@ -120,7 +120,7 @@ fn handle_add(
         io::stdin()
             .lock()
             .lines()
-            .filter_map(|l| l.ok())
+            .map_while(Result::ok)
             .map(|l| l.trim().to_string())
             .filter(|l| !l.is_empty())
             .collect()
@@ -195,11 +195,10 @@ fn handle_add(
         }
 
         // 重复任务
-        if let Some(ref repeat_pattern) = repeat {
-            if let Some(pattern) = crate::core::models::RepeatPattern::parse(repeat_pattern) {
+        if let Some(ref repeat_pattern) = repeat
+            && let Some(pattern) = crate::core::models::RepeatPattern::parse(repeat_pattern) {
                 url = url.param("repeat", &pattern.to_url_param());
             }
-        }
         if let Some(ref until) = repeat_until {
             url = url.param("repeat-until", until);
         }
@@ -228,11 +227,10 @@ fn handle_add(
         }
 
         // 重复任务（批量不支持重复，但保持一致性）
-        if let Some(ref repeat_pattern) = repeat {
-            if let Some(pattern) = crate::core::models::RepeatPattern::parse(repeat_pattern) {
+        if let Some(ref repeat_pattern) = repeat
+            && let Some(pattern) = crate::core::models::RepeatPattern::parse(repeat_pattern) {
                 url = url.param("repeat", &pattern.to_url_param());
             }
-        }
         if let Some(ref until) = repeat_until {
             url = url.param("repeat-until", until);
         }
@@ -393,11 +391,10 @@ fn handle_update(
     // 重复任务
     if no_repeat {
         url = url.param("repeat", "false");
-    } else if let Some(ref repeat_pattern) = repeat {
-        if let Some(pattern) = crate::core::models::RepeatPattern::parse(repeat_pattern) {
+    } else if let Some(ref repeat_pattern) = repeat
+        && let Some(pattern) = crate::core::models::RepeatPattern::parse(repeat_pattern) {
             url = url.param("repeat", &pattern.to_url_param());
         }
-    }
     if let Some(ref until) = repeat_until {
         url = url.param("repeat-until", until);
     }
@@ -609,11 +606,10 @@ fn print_task_details(task: &crate::db::Task) {
     println!("  {}: {}", "Status".bold(), status_str);
 
     // Notes
-    if let Some(ref notes) = task.notes {
-        if !notes.is_empty() {
+    if let Some(ref notes) = task.notes
+        && !notes.is_empty() {
             println!("  {}: {}", "Notes".bold(), notes);
         }
-    }
 
     // Tags
     if !task.tags.is_empty() {

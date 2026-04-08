@@ -27,6 +27,7 @@ pub fn execute_applescript(script: &str) -> anyhow::Result<String> {
 }
 
 /// Check if Things 3 is running
+#[allow(dead_code)]
 pub fn is_things_running() -> anyhow::Result<bool> {
     let script = r#"tell application "System Events" to return (name of processes) contains "Things3""#;
     let result = execute_applescript(script)?;

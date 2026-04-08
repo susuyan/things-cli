@@ -13,7 +13,7 @@ pub use url_builder::{Command, ThingsUrl};
 
 /// 核心错误类型
 #[derive(Error, Debug)]
-#[allow(dead_code)]
+#[allow(dead_code, clippy::enum_variant_names)]
 pub enum ThingsError {
     #[error("Things app not found. Please install Things 3 from the App Store.")]
     AppNotFound,
