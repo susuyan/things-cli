@@ -12,42 +12,8 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  create-release:
-    name: Create Release
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-          body: |
-            ## Things CLI ${{ github.ref_name }}
-
-            ### Installation
-
-            Download the binary for macOS:
-            ```bash
-curl -L -o things https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/things-macos
-chmod +x things
-sudo mv things /usr/local/bin/
-```
-
-            Or build from source:
-            ```bash
-cargo install --git https://github.com/${{ github.repository }}.git --tag ${{ github.ref_name }}
-```
-
-  build-and-upload:
-    name: Build and Upload
-    needs: create-release
+  build-and-release:
+    name: Build and Release
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -70,29 +36,31 @@ cargo install --git https://github.com/${{ github.repository }}.git --tag ${{ gi
       - name: Strip binary
         run: strip target/release/things
 
-      - name: Get version
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./target/release/things
-          asset_name: things-macos
-          asset_content_type: application/octet-stream
-
       - name: Generate SHA256
         run: shasum -a 256 target/release/things > things-macos.sha256
 
-      - name: Upload SHA256 checksum
-        uses: actions/upload-release-asset@v1
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## Things CLI ${{ github.ref_name }}
+
+            ### Installation
+
+            Download the binary for macOS:
+            ```bash
+            curl -L -o things https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/things-macos
+            chmod +x things
+            sudo mv things /usr/local/bin/
+            ```
+
+            Or build from source:
+            ```bash
+            cargo install --git https://github.com/${{ github.repository }}.git --tag ${{ github.ref_name }}
+            ```
+          files: |
+            target/release/things#things-macos
+            things-macos.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./things-macos.sha256
-          asset_name: things-macos.sha256
-          asset_content_type: text/plain
